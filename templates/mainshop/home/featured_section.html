@@ -1,0 +1,92 @@
+{% load static %}
+<section class="featured spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2>Featured Product</h2>
+                </div>
+                <div class="featured__controls">
+                    <ul>
+                        <li class="active" data-category="all">
+                            <a href="#" class="category-link">All</a>
+                        </li>
+                        {% for category in featured_categories %}
+                        <li data-category="{{ category.slug }}">
+                            <a href="#" class="category-link">{{ category.cat_name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row featured__filter" id="featured-products-container">
+            {% for product in products|slice:":8" %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mix {{ product.category.slug }}">
+                <div class="featured__item">
+                    <div class="featured__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}"  >
+                        <ul class="featured__item__pic__hover">
+                            <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                            <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="featured__item__text">
+                        <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:5 }}</a></h6>
+                        <h5>Rs {{ product.price }}</h5>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+<script src="{% static 'mainshop/assets/js/jquery-3.6.0.min.js' %}"></script> 
+<script>
+    $(document).ready(function () {
+        $('.category-link').on('click', function (e) {
+            e.preventDefault();
+            var category = $(this).parent().data('category');
+            var url = category === 'all' ? '{% url "ajax-featured-products" "all" %}' : '{% url "ajax-featured-products" "CATEGORY_SLUG" %}'.replace("CATEGORY_SLUG", category);
+    
+            $.ajax({
+                url: url,
+                success: function (data) {
+                    var container = $('#featured-products-container');
+                    container.empty();
+    
+                    data.products.forEach(function (product) {
+                    var productHtml = `
+                        <div class="col-lg-3 col-md-4 col-sm-6 mix ${product.category_slug}">
+                            <div class="featured__item">
+                                <div class="featured__item__pic set-bg" data-setbg="${product.image_url}">
+                                    <ul class="featured__item__pic__hover">
+                                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="featured__item__text">
+                                    <h6><a href="/product-detail/${product.pk}/">${product.product_name}</a></h6>
+                                    <h5>Rs ${product.price}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.append(productHtml);
+                    });
+
+                    // Reinitialize the set-bg class to apply background images
+                    $('.set-bg').each(function () {
+                        var bg = $(this).data('setbg');
+                        $(this).css('background-image', 'url(' + bg + ')');
+                    });
+                },
+                error: function () {
+                    alert('Failed to load products.');
+                }
+            });
+        });
+    });
+    </script>
+    

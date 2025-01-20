@@ -1,0 +1,20 @@
+{% extends "mainshop/base.html" %}
+{% block content %}
+
+{% include "mainshop/product_detail/banner.html" %}
+
+
+<section class="product-details spad">
+    <div class="container">
+        
+        <div class="row">
+        {% include "mainshop/product_detail/top_left.html" %}
+        {% include "mainshop/product_detail/top_right.html" %}
+        {% include "mainshop/product_detail/bottom.html" %}
+    </div>
+    {% include "mainshop/product_detail/related_product.html" %}
+</div>
+</section>
+
+
+{% endblock content %}

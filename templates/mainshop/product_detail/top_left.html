@@ -1,0 +1,43 @@
+<div class="col-lg-6 col-md-6">
+    <div class="product__details__pic">
+        <!-- Main Product Image -->
+        <div class="product__details__pic__item">
+            <img class="product__details__pic__item--large"
+                src="{{ product.images.first.image.url }}" alt="Main Product Image">
+        </div>
+
+        <!-- Product Image Slider -->
+        <div class="product__details__pic__slider owl-carousel">
+            {% for image in product.images.all %}
+            <img data-imgbigurl="{{ image.image.url }}"
+                src="{{ image.image.url }}" alt="Product Image {{ forloop.counter }}">
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $(".owl-carousel").owlCarousel({
+            items: 3, // Fixed number of items to display
+            margin: 10, // Space between items
+            loop: false, // Disable infinite loop
+            nav: true, // Show navigation arrows
+            dots: false, // Hide dots
+            responsive: {
+                0: {
+                    items: 1 // Show 1 item on small screens
+                },
+                600: {
+                    items: 2 // Show 2 items on medium screens
+                },
+                1000: {
+                    items: 3 // Show 3 items on large screens
+                }
+            }
+        });
+    });
+</script>
+

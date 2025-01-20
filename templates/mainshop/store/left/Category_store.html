@@ -1,0 +1,9 @@
+<div class="sidebar__item">
+    <h4>Categories</h4>
+    <ul>
+         {% for category in categories %}
+        <li><a href="{% url 'product-by-category' category.id %}">{{ category.cat_name|title }}</a></li>
+         {% endfor %}
+
+    </ul>
+</div>

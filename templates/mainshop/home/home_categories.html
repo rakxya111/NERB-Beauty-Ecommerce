@@ -1,0 +1,19 @@
+{% load static %}
+<section class="categories">
+    <div class="container">
+        <div class="row">
+            <div class="categories__slider owl-carousel">
+                {% for brand in brands %}
+                <div class="col-lg-3">
+                    <a href="{% url 'product-by-brand' brand.id %}">
+                    <div class="categories__item set-bg" 
+                         data-setbg="{% if brand.brand_image %}{{ brand.brand_image.url }}{% else %}{% static 'mainshop/assets/img/product/product-1.jpg' %}{% endif %}"> 
+                    
+                    </div>
+                </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>

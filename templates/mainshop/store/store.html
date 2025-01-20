@@ -1,0 +1,34 @@
+{% extends "mainshop/base.html" %}
+{% block content %}
+
+{% include "mainshop/store/storeBanner.html" %}
+<!-- Product Section Begin -->
+<section class="product spad">
+    <div class="container">
+        <div class="row">
+            
+            <div class="col-lg-3 col-md-5">
+               
+                <div class="sidebar">
+                    
+                     {% include "mainshop/store/left/Category_store.html" %}
+                     {% include "mainshop/store/left/PriceRange.html" %}
+                     {% include "mainshop/store/left/FilterBy_Brand.html" %}
+                     {% include "mainshop/store/left/Storelatest_product.html" %}
+                </div>
+            </div>
+           
+           
+            <div class="col-lg-9 col-md-7">
+            
+               
+                {% include "mainshop/store/right/filter_product.html" %}
+                {% include "mainshop/store/right/products.html" %}
+                {% include "mainshop/store/right/pagination.html" %}
+            </div>
+       
+        </div>
+    </div>
+</section>
+
+{% endblock content %} 

@@ -1,0 +1,15 @@
+<!-- popular sizes -->
+ 
+<div class="sidebar__item">
+    <h4>Brands</h4>
+    {% for brand in brands %}
+    <div class="sidebar__item__size" >
+        <label for="{{ brand.brand_name }}" style=" background-color: #ab9595;">
+            <a href="{% url 'product-by-brand' brand.id %}" class="hover">{{ brand.brand_name }}</a>
+            
+            <!-- <input type="radio" id="large"> -->
+        </label>
+    </div>
+    {% endfor %}
+
+</div>
