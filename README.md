@@ -7,15 +7,15 @@
 
 # Technologies Used:
 
-Django
-Python
+Django,
+Python,
 HTML/CSS/JavaScript
 
 # Features:
 
-User authentication
-Product search and filter
-Shopping cart and checkout system
+User authentication |
+Product search and filter |
+Shopping cart and checkout system |
 Payment integration
  
 
