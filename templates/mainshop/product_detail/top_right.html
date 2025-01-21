@@ -1,8 +1,11 @@
 <div class="col-lg-6 col-md-6">
     {% if product.is_sale %}
     <div class="badge text-light position-absolute" style=" margin-top: -40px; width: 100px; background-color: red; height: 30px; font-size:large;"> On Sale </div>
-    {% endif %}
+   
     <div class="product__details__text">
+        
+        <h6 style=" font-size:x-large; font-weight: bold; color: rgb(251, 0, 0);">{{ product.discount }} % off</h6>
+    
         <h3>{{ product.product_name }}</h3>
         <div class="product__details__rating">
             <i class="fa fa-star"></i>
@@ -12,10 +15,23 @@
             <i class="fa fa-star-half-o"></i>
             <span>(18 reviews)</span>
         </div>
-        {% if product.is_sale %}
-        <div class="product__details__price">Rs {{ product.sale_price }} &nbsp; <strike> Rs{{ product.price }}</strike></div>
+        
+        <div class="product__details__price">Rs. {{ product.sale_price }} &nbsp; <strike> Rs{{ product.price }}</strike></div>
         {% else %}
-        <div class="product__details__price">Rs {{ product.price }}</div>
+       
+     <div class="product__details__text">
+         <h3>{{ product.product_name }}</h3>
+            <div class="product__details__rating">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star-half-o"></i>
+                <span>(18 reviews)</span>
+            </div>
+            
+       
+        <div class="product__details__price">Rs. {{ product.price }}</div>
         {% endif %}
 
         <p >{{ product.description| striptags |truncatewords:50 }}</p>

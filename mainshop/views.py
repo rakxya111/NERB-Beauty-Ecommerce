@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.urls import reverse
-from mainshop.models import Product , Category , Brand
+from mainshop.models import Product , Category , Brand,Newsletter,Contact
 from django.views.generic import ListView,TemplateView,DetailView,View
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
+from mainshop.forms import Newsletterform,ContactForm
 
 class HomeView(ListView):
     model = Product
@@ -13,7 +14,7 @@ class HomeView(ListView):
     context_object_name = "products"
     queryset = Product.objects.filter(
         is_available=True
-    )[:8]
+    ).order_by("-created_date")[:8]
 
 class FeaturedProductsView(ListView):
     model = Product
@@ -39,12 +40,17 @@ def ajax_featured_products(request, category_slug):
         products = Product.objects.filter(is_available=True).order_by("-created_date")[:8]
     else:
         category = get_object_or_404(Category, slug=category_slug)
-        products = Product.objects.filter(is_available=True, category=category).order_by("-created_date")
+        products = Product.objects.filter(is_available=True, category=category).order_by("-created_date")[:8]
     
     products_data = [
         {
             'product_name': product.product_name,
             'price': product.price,
+            'discount' : product.discount,
+            'price': float(product.price) if product.price else 0.0,
+            'sale_price': float(product.sale_price()) if product.is_sale else 0.0,  # Call the method
+            'discount': float(product.discount) if product.discount else 0.0,
+            'is_sale': product.is_sale,
             'image_url': product.images.first().image.url if product.images.exists() else '',
             'category_slug': product.category.slug,
             'pk': product.pk,  
@@ -52,8 +58,6 @@ def ajax_featured_products(request, category_slug):
         for product in products
     ]
     return JsonResponse({'products': products_data})
-
-
 
 
 
@@ -71,6 +75,9 @@ class ProductListView(ListView):
             queryset = queryset.order_by("price")  # Low to high
         elif sort == "price_desc":
             queryset = queryset.order_by("-price")  # High to low
+        elif sort == "sale_product":
+            queryset = Product.objects.filter(is_available=True,is_sale=True).order_by("-created_date")
+
 
         return queryset
 
@@ -186,3 +193,47 @@ class ProductSearchView(View):
             {"page_obj": products, "query": query},
         )
      
+class NewsletterView(View):
+    def post(self, request):
+        is_ajax = request.headers.get("X-Requested-With")
+        if is_ajax == "XMLHttpRequest":
+            form = Newsletterform(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data.get("email")
+                
+                # Check for duplicate email
+                if Newsletter.objects.filter(email=email).exists():
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "message": "This email is already subscribed to the newsletter.",
+                        },
+                        status=400,
+                    )
+                
+                # Save the form if no duplicates
+                form.save()
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "message": "Successfully Subscribed to Newsletter",
+                    },
+                    status=201,
+                )
+            else:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Cannot Subscribe to the Newsletter. Please check your input.",
+                    },
+                    status=400,
+                )
+        else:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Cannot process, must be an AJAX XMLHttpRequest.",
+                },
+                status=400,
+            )
+

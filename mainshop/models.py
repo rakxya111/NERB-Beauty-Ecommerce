@@ -36,8 +36,15 @@ class Product(models.Model):
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
-    is_sale = models.BooleanField(default=False)
-    sale_price = models.DecimalField(default=0,decimal_places=2,max_digits=6)
+    is_sale = models.BooleanField(default=False) 
+    discount = models.DecimalField(max_digits=5,decimal_places=2,default=0)
+    
+
+    def sale_price(self):
+        discount_amount = (self.price * self.discount) / 100
+        saleprice = self.price - discount_amount
+        return saleprice
+
 
     def __str__(self):
         return self.product_name
@@ -48,3 +55,17 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.product.product_name}"
+
+class Contact(TimeStampModel):
+    message = models.TextField()
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    
+    def __str__(self):
+        return self.name
+
+class Newsletter(TimeStampModel):
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.email

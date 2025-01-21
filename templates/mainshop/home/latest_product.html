@@ -15,7 +15,7 @@
                                 </div>
                                 <div class="latest-product__item__text">
                                     <h6>{{ product.product_name }}</h6>
-                                    <span>Rs {{ product.price }}</span>
+                                    <span>Rs. {{ product.price }}</span>
                                 </div>
                             </a>
                             {% endfor %}
@@ -41,13 +41,13 @@
                             <div class="latest-product__item">
                                 <a href="{% url 'product-detail' product.pk %}">
                                     <div class="latest-product__item__pic">
-                                        <div class="badge text-light position-absolute" style="width: 50px; background-color: red; height: 20px; font-size: small;">On Sale</div>
+                                        <div class="badge text-light position-absolute" style=" background-color: red; height: 20px; font-size: small;">{{ product.discount }}% discount</div>
                                         <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}">
                                     </div>
                                 </a>
                                 <div class="latest-product__item__text">
                                     <h6>{{ product.product_name }}</h6>
-                                    <span>Rs {{ product.sale_price }} &nbsp; <strike>Rs {{ product.price }}</strike></span>
+                                    <span>Rs. {{ product.sale_price }} &nbsp; <strike>Rs. {{ product.price }}</strike></span>
                                 </div>
                             </div>
                             {% endfor %}
@@ -62,7 +62,7 @@
           
           <div class="col-lg-4 col-md-6">
                 <div class="latest-product__text">
-                    <h4>High Selling Products</h4>
+                    <h4>Best Selling Products</h4>
                     <div class="latest-product__slider owl-carousel">
                         <div class="latest-prdouct__slider__item">
                             <a href="#" class="latest-product__item">

@@ -24,7 +24,12 @@
             {% for product in products|slice:":8" %}
             <div class="col-lg-3 col-md-4 col-sm-6 mix {{ product.category.slug }}">
                 <div class="featured__item">
-                    <div class="featured__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}"  >
+                    <div class="featured__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}">
+                        {% if product.is_sale %}
+                        <div style="padding: 10px; background-color: red; font-size: small; font-weight: bold; color: aliceblue; width: auto; position: absolute;">
+                            {{ product.discount }}% Off
+                        </div>
+                        {% endif %}
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart"></i></a></li>
                             <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
@@ -32,7 +37,13 @@
                     </div>
                     <div class="featured__item__text">
                         <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:5 }}</a></h6>
-                        <h5>Rs {{ product.price }}</h5>
+                        <h5>
+                            {% if product.is_sale %}
+                            Rs. {{ product.sale_price|floatformat:2 }} <strike>Rs. {{ product.price }}</strike>
+                            {% else %}
+                            Rs. {{ product.price }}
+                            {% endif %}
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -42,25 +53,35 @@
 </section>
 
 
-<script src="{% static 'mainshop/assets/js/jquery-3.6.0.min.js' %}"></script> 
+
+<script src="{% static 'mainshop/assets/js/jquery-3.6.0.min.js' %}"></script>
 <script>
-    $(document).ready(function () {
-        $('.category-link').on('click', function (e) {
-            e.preventDefault();
-            var category = $(this).parent().data('category');
-            var url = category === 'all' ? '{% url "ajax-featured-products" "all" %}' : '{% url "ajax-featured-products" "CATEGORY_SLUG" %}'.replace("CATEGORY_SLUG", category);
-    
-            $.ajax({
-                url: url,
-                success: function (data) {
-                    var container = $('#featured-products-container');
-                    container.empty();
-    
-                    data.products.forEach(function (product) {
+$(document).ready(function () {
+    $('.category-link').on('click', function (e) {
+        e.preventDefault();
+        var category = $(this).parent().data('category');
+        var url = category === 'all' 
+            ? '{% url "ajax-featured-products" "all" %}' 
+            : '{% url "ajax-featured-products" "CATEGORY_SLUG" %}'.replace("CATEGORY_SLUG", category);
+
+        $.ajax({
+            url: url,
+            success: function (data) {
+                var container = $('#featured-products-container');
+                container.empty();
+
+                data.products.forEach(function (product) {
+                    var discountHtml = product.is_sale
+                        ? `<div style="padding: 10px; background-color: red; font-size: small; font-weight: bold; color: aliceblue; width: auto; position: absolute;">
+                               ${product.discount}% Off
+                           </div>`
+                        : '';
+
                     var productHtml = `
                         <div class="col-lg-3 col-md-4 col-sm-6 mix ${product.category_slug}">
                             <div class="featured__item">
                                 <div class="featured__item__pic set-bg" data-setbg="${product.image_url}">
+                                    ${discountHtml}
                                     <ul class="featured__item__pic__hover">
                                         <li><a href="#"><i class="fa fa-heart"></i></a></li>
                                         <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
@@ -68,25 +89,29 @@
                                 </div>
                                 <div class="featured__item__text">
                                     <h6><a href="/product-detail/${product.pk}/">${product.product_name}</a></h6>
-                                    <h5>Rs ${product.price}</h5>
+                                    <h5>
+                                        ${product.is_sale 
+                                            ? `Rs. ${product.sale_price.toFixed(2)} <strike>Rs. ${product.price}</strike>` 
+                                            : `Rs. ${product.price}`}
+                                    </h5>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                     container.append(productHtml);
-                    });
+                });
 
-                    // Reinitialize the set-bg class to apply background images
-                    $('.set-bg').each(function () {
-                        var bg = $(this).data('setbg');
-                        $(this).css('background-image', 'url(' + bg + ')');
-                    });
-                },
-                error: function () {
-                    alert('Failed to load products.');
-                }
-            });
+                // Reinitialize the set-bg class to apply background images
+                $('.set-bg').each(function () {
+                    var bg = $(this).data('setbg');
+                    $(this).css('background-image', 'url(' + bg + ')');
+                });
+            },
+            error: function () {
+                alert('Failed to load products.');
+            }
         });
     });
-    </script>
+});
+</script>
+
     

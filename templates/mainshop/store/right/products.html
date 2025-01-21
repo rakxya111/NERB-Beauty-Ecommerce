@@ -13,8 +13,9 @@
                     </ul>
                 </div>
                 <div class="product__item__text">
+                    <h6 style=" font-size:large; font-weight: bold; color: rgb(255, 0, 0);">{{ product.discount }} % off</h6>
                     <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name }}</a></h6>
-                    <h5>Rs {{ product.sale_price }} &nbsp; <strike> Rs {{ product.price }}</strike></h5>
+                    <h5>Rs. {{ product.sale_price }} &nbsp; <strike> Rs. {{ product.price }}</strike></h5>
                 </div>
             </div>
             {% else %}
@@ -27,14 +28,14 @@
                 </div>
                 <div class="product__item__text">
                     <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name }}</a></h6>
-                    <h5>Rs {{ product.price }}</h5>
+                    <h5>Rs. {{ product.price }}</h5>
                 </div>
             </div>
             {% endif %}
         </div>
         {% endfor %}
     {% else %}
-        <p>No products found.</p>
+        <p>  No products found.</p>
     {% endif %}
 </div>
 

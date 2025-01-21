@@ -16,7 +16,4 @@ def navigation(request):
         "featured_categories" : featured_categories,
         "latest_products" : latest_products,
         "sale_products" : sale_products,
-      
-       
-       
-        }
+    }

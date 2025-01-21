@@ -44,15 +44,69 @@
     
 
 <!-- Js Plugins -->
-<script src="{% static 'mainshop/assets/js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'mainshop/assets/js/bootstrap.min.js' %}"></script>
+<!-- <script src="{% static 'mainshop/assets/js/jquery-3.3.1.min.js' %}"></script> -->
+<script src="{% static 'mainshop/assets/js/jquery-3.6.0.min.js' %}"></script> 
 <script src="{% static 'mainshop/assets/js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'mainshop/assets/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'mainshop/assets/js/jquery-ui.min.js' %}"></script>
 <script src="{% static 'mainshop/assets/js/jquery.slicknav.js' %}"></script>
 <script src="{% static 'mainshop/assets/js/mixitup.min.js' %}"></script>
 <script src="{% static 'mainshop/assets/js/owl.carousel.min.js' %}"></script>
 <script src="{% static 'mainshop/assets/js/main.js' %}"></script>
-<script src="{% static 'mainshop/assets/js/jquery-3.6.0.min.js' %}"></script> 
+<script>
+    $("#newsletter_side_form").submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        let serializedData = $(this).serialize(); // Serialize form data
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'newsletter' %}", // Django URL for newsletter
+            data: serializedData,
+            success: function (response) {
+                const alert = $(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>${response.message}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+                $("#newsletter_side_message").append(alert); // Append success message
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.remove();
+                }, 5000);
+
+                // Clear the email input field
+                $("#newsletter_side_form input[type='email']").val('');
+            },
+            error: function(response) {
+            const alert = $(`
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>${response.responseJSON.message}</strong> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            `);
+            $("#newsletter_side_message").append(alert);
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.remove();
+                }, 5000);
+
+            // Clear the email input field after 3 seconds
+            setTimeout(function() {
+                $("#newsletter_side_form input[type='email']").val('');
+            }, 3000);
+        }
+
+        });
+    });
+</script>
 
 
     

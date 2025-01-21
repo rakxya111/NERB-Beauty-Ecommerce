@@ -7,6 +7,7 @@
                     <option value="">Default</option>
                     <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price Low to High</option>
                     <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price High to Low</option>
+                    <option value="sale_product" {% if request.GET.sort == 'sale_product' %}selected{% endif %}>Products on Sale</option>
                 </select>
             </div>
         </div>

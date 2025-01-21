@@ -10,13 +10,30 @@
         </div>
         <div class="row">
             {% for product in related_products %}
+           {% if product.is_sale %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}">
+                        <div style=" width: 80px; background-color: red; font-size:large; color: aliceblue; font-weight: bold;"> On Sale </div>
+                        <ul class="product__item__pic__hover">
+                            <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                            <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6 style=" font-size:x-large; font-weight: bold; color: rgb(251, 0, 0);">{{ product.discount }}% off</h6>
+                        <h6><a href="{% url 'product-detail' product.id %}">{{ product.product_name }}</a></h6>
+                        <h5>Rs. {{ product.sale_price }} <strike>Rs. {{ product.price }}</strike></h5>
+                    </div>
+                </div>
+            </div>
            
+            {% else %}
             <div class="col-lg-3 col-md-4 col-sm-6">
                 <div class="product__item">
                     <div class="product__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}">
                         <ul class="product__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="#"><i class="fa fa-retweet"></i></a></li>
                             <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
                         </ul>
                     </div>
@@ -26,6 +43,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
            
             {% endfor %}
 

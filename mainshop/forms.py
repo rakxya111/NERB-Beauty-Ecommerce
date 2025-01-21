@@ -1,28 +1,16 @@
-# from django_summernote.widgets import SummernoteWidget
-# from django import forms
-# from mainshop.models import Product
+from django_summernote.widgets import SummernoteWidget
+from django import forms
+from mainshop.models import Product,Contact,Newsletter
 
-# class PostForm(forms.ModelForm):
+class ContactForm(forms.ModelForm):
 
-#     class Meta:
-#         model = Product
-#         exclude = ("published_date")
-#         widgets = {
-#             "title" : forms.TextInput(
-#                 attrs={
-#                     "class":"form-control",
-#                     "placeholder":"Enter the title of the post",
-#                 }
-#             ),
-#             "content" : SummernoteWidget(
-#                 attrs={
-#                     "summernote":{
-#                         "width" : "100%",
-#                         "height" : "400px",
-#                     },
-#                 }
-#             ),
-#             "brand" : forms.Select(attrs={"class":"form-control"}),
-#             "category" : forms.Select(attrs={"class":"form-control"}),
-            
-#         }
+    class Meta:
+        model = Contact
+        fields = "__all__"
+
+class Newsletterform(forms.ModelForm):
+
+    class Meta:
+        model = Newsletter
+        fields = "__all__"
+
