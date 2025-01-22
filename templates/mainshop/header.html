@@ -52,6 +52,8 @@
                     <ul>
                         <li class="active"><a href="/">Home</a></li>
                         <li><a href="{% url 'product-list' %}">Shop</a></li>
+                        <li><a href="#">Flash Sale</a></li>
+                       
                         <li><a href="#">Pages</a>
                             <ul class="header__menu__dropdown">
                                 <li><a href="{% url 'product-list' %}">Shop</a></li>
@@ -60,8 +62,8 @@
                                 <li><a href="./blog-details.html">Blog </a></li>
                             </ul>
                         </li>
-                        <li><a href="./blog.html">Blog</a></li>
-                        <li><a href="./contact.html">Contact</a></li>
+                        
+                        <li><a href="{% url 'contact' %}">Contact</a></li>
                     </ul>
                 </nav>
             </div>

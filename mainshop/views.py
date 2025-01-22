@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from mainshop.forms import Newsletterform,ContactForm
+from django.contrib import messages
+from django.shortcuts import redirect, render
 
 class HomeView(ListView):
     model = Product
@@ -237,3 +239,19 @@ class NewsletterView(View):
                 status=400,
             )
 
+class ContactView(View):
+    template_name = "mainshop/contact.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'message': 'Your message has been sent successfully. We will get back to you soon!'}, status=200)
+        else:
+            # Collect form errors
+            errors = form.errors.as_json()
+            return JsonResponse({'message': 'Failed to send your message. Please check your input.', 'errors': errors}, status=400)
+            

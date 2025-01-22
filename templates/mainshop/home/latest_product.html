@@ -41,7 +41,7 @@
                             <div class="latest-product__item">
                                 <a href="{% url 'product-detail' product.pk %}">
                                     <div class="latest-product__item__pic">
-                                        <div class="badge text-light position-absolute" style=" background-color: red; height: 20px; font-size: small;">{{ product.discount }}% discount</div>
+                                        <div class="badge text-light position-absolute" style=" background-color: red; height: 20px; font-size: small;">{{ product.discount }}% off</div>
                                         <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}">
                                     </div>
                                 </a>
