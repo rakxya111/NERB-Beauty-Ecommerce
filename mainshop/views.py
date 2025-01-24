@@ -254,4 +254,26 @@ class ContactView(View):
             # Collect form errors
             errors = form.errors.as_json()
             return JsonResponse({'message': 'Failed to send your message. Please check your input.', 'errors': errors}, status=400)
-            
+
+class FlashSaleView(ListView):
+    model = Product
+    template_name = "mainshop/flash_sale/flash.html"
+    context_object_name = "products"
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(is_available=True,is_sale=True).order_by("-created_date")
+        sort = self.request.GET.get("sort")
+
+        if sort == "price_asc":
+            queryset = queryset.order_by("price")  # Low to high
+        elif sort == "price_desc":
+            queryset = queryset.order_by("-price")  # High to low
+
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["product_count"] = self.get_queryset().count()
+        context["request"] = self.request  # Pass request to template
+        return context

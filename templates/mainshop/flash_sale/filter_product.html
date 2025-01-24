@@ -1,0 +1,42 @@
+<div class="filter__item">
+    <div class="row">
+        <div class="col-lg-4 col-md-5">
+            <div class="filter__sort">
+                <span>Sort By</span>
+                <select id="sortOptions" onchange="applySort()">
+                    <option value="">Default</option>
+                   
+                    <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Price Low to High</option>
+                    <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Price High to Low</option>
+                    
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <div class="filter__found">
+                <h6><span>{{ product_count }}</span> Products found</h6>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-3">
+            <div class="filter__option">
+                <span class="icon_grid-2x2"></span>
+                <span class="icon_ul"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function applySort() {
+        const sortValue = document.getElementById('sortOptions').value;
+        const currentUrl = new URL(window.location.href);
+
+        if (sortValue) {
+            currentUrl.searchParams.set('sort', sortValue); // Add or update the 'sort' parameter
+        } else {
+            currentUrl.searchParams.delete('sort'); // Remove 'sort' parameter for default
+        }
+
+        window.location.href = currentUrl.toString(); // Redirect to the updated URL
+    }
+</script>
