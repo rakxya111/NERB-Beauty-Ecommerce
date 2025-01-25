@@ -1,0 +1,110 @@
+{% extends "mainshop/base.html" %}
+{% block content %}
+
+{% include "mainshop/cart/cartBanner.html" %}
+
+{% if not cart_items %}
+
+<section class="shoping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+<h2>The FAVOURITE is Empty.......🥹🥹🥹</h2>
+<a href="{% url 'product-list' %}" class=" primary-btn cart-btn cart-btn-right " style="background-color: green; color: white; margin-top: -40px;"> <span class="icon_loading"></span>
+    CONTINUE SHOPPING</a>
+</div>
+</div>
+</div>
+</section>
+
+{% else %}
+
+    <!-- Shoping Cart Section Begin -->
+    <section class="shoping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="shoping__product">Products</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th style="display: none;">Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr>
+                                    <td class="shoping__cart__item">
+                                        <img src="{{ item.product.images.first.image.url }}" alt="" style="height: 50px; width: auto;">
+                                        <h5>{{ item.product.product_name|truncatewords:6 }}</h5>
+                                    </td>
+                                    <td class="shoping__cart__price">
+                                        Rs {{ item.product.sale_price }}
+                                    </td>
+                                    <td class="shoping__cart__quantity">
+                                        <div class="quantity" >
+                                            
+                                            <form method="POST" action="{% url 'remove_cart' item.product.id %}" class="btn btn-light" style="width:40px; height:30; margin-top: 13px;">
+                                                {% csrf_token %}
+                                                <button type="submit" style="border: none; margin-left: -5px;" >
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </form>
+                                            
+                                            <input type="text" value="{{ item.quantity }}" class="btn btn-light" data-product-id="{{ item.product.id }}" style="width: 50px; height: auto; text-align: center; margin-top: 11px;" readonly>
+                                          
+                                            <form method="POST" action="{% url 'add_to_cart' item.product.id %}" class="btn btn-light" style="width:40px; height:30; margin-top: 13px;">
+                                                {% csrf_token %}
+                                                <button type="submit" style="border: none; margin-left: -5px;" >
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                    
+                                    </td>
+                                    <td class="shoping__cart__total">
+                                        <value  id="subtotal-{{ item.product.id }}">
+                                            Rs {{ item.sub_total }}
+                                        </value>
+                                    </td>
+                                    
+                                    
+                                    <td class="shoping__cart__item__close">
+                                        <form method="POST" action="{% url 'remove_cart_all' item.product.id %}" class="btn btn-light" style=" width: 10px;  height: auto; margin-top: 13px; background: none; border: none;">
+                                            {% csrf_token %}
+                                            <button type="submit" style="border: none; background: none; margin-left: -10px;">
+                                                <i class="fa fa-times" aria-hidden="true" style="color: red;"></i>
+                                            </button>
+                                        </form>
+                                       
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shoping__cart__btns">
+                       
+                        <a href="{% url 'product-list' %}" class=" primary-btn cart-btn cart-btn-right " style="background-color: green; color: white;"> <span class="icon_loading"></span>
+                            CONTINUE SHOPPING</a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+    <!-- Shoping Cart Section End -->
+     {% endif %}
+
+{% endblock %} 

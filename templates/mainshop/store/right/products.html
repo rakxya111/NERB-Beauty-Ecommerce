@@ -1,42 +1,94 @@
 {% load static %}
 <div class="row">
     {% if page_obj.object_list %}
-        {% for product in page_obj %}
-        <div class="col-lg-4 col-md-6 col-sm-6">
-            {% if product.is_sale %}
-            <div class="product__item">
+       
+    {% for product in page_obj %}
+    
+    <div class="col-lg-4 col-md-6 col-sm-6">
+    
+        {% if product.is_sale %}
+    
+        <div class="product__item">
                 <div class="product__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}" data-href="{% url 'product-detail' product.pk %}">
                     <div class="badge text-light position-absolute" style="top: 0.5rem; right: 0.5rem; width: 50px; background-color: red; height: 20px; font-size:small;"> On Sale </div>
+    
+                    {% if product.stock <= 0 %}
+                    
+                    <h6 style="color: red; font-weight: bold;"> Out of Stock</h1>
                     <ul class="product__item__pic__hover">
                         <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                        <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
                     </ul>
+
+                    {% else %}
+    
+                    <ul class="product__item__pic__hover">
+                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                        
+                    </ul>
+    
+                    {% endif %}
+    
                 </div>
                 <div class="product__item__text">
                     <h6 style=" font-size:large; font-weight: bold; color: rgb(255, 0, 0);">{{ product.discount }} % off</h6>
                     <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name }}</a></h6>
                     <h5>Rs. {{ product.sale_price }} &nbsp; <strike> Rs. {{ product.price }}</strike></h5>
+                    <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -105px; margin-top: 10px;">
+                        {% csrf_token %}
+                        <button type="submit" class="primary-btn" style="border: none; ">
+                            ADD TO CART
+                        </button>
+                       
+                    </form>
+
                 </div>
             </div>
+    
             {% else %}
+    
             <div class="product__item"> 
                 <div class="product__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}" data-href="{% url 'product-detail' product.pk %}">
+    
+                    {% if product.stock <= 0 %}
+                    
+                    <h6 style="color: red; font-weight: bold;"> Out of Stock</h1>
                     <ul class="product__item__pic__hover">
                         <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                        <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
                     </ul>
+
+    
+                    {% else %}
+    
+                    <ul class="product__item__pic__hover">
+                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                   </ul>
+
+                   {% endif %}
+
                 </div>
                 <div class="product__item__text">
-                    <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name }}</a></h6>
+                    <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:8 }}</a></h6>
                     <h5>Rs. {{ product.price }}</h5>
+                    <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -105px; margin-top: 40px;">
+                        {% csrf_token %}
+                        <button type="submit" class="primary-btn" style="border: none;">
+                            ADD TO CART
+                        </button>
+                    </form>
                 </div>
             </div>
+
             {% endif %}
+
         </div>
+
         {% endfor %}
+
         {% else %}
+
         <p>  No products found.</p>
-    {% endif %}
+
+        {% endif %}
 </div>
 
 

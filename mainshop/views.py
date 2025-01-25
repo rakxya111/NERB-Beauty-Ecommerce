@@ -15,7 +15,7 @@ class HomeView(ListView):
     template_name = "mainshop/home.html"
     context_object_name = "products"
     queryset = Product.objects.filter(
-        is_available=True
+        is_available=True , stock__gte=1
     ).order_by("-created_date")[:8]
 
 class FeaturedProductsView(ListView):
@@ -23,6 +23,7 @@ class FeaturedProductsView(ListView):
     template_name = 'mainshop/base.html'
     context_object_name = 'products'
     paginate_by = 8
+
 
     def get_queryset(self):
         category_slug = self.kwargs.get("category_slug", None)

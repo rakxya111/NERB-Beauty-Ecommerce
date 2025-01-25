@@ -32,11 +32,12 @@
                         {% endif %}
                         <ul class="featured__item__pic__hover">
                             <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                            <!-- <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li> -->
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:5 }}</a></h6>
+                        <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:4 }}</a></h6>
+                        
                         <h5>
                             {% if product.is_sale %}
                             Rs. {{ product.sale_price|floatformat:2 }} <strike>Rs. {{ product.price }}</strike>
@@ -44,6 +45,14 @@
                             Rs. {{ product.price }}
                             {% endif %}
                         </h5>
+                      
+                        <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -105px; margin-top: 20px;">
+                            {% csrf_token %}
+                            <button type="submit" class="primary-btn" style="border: none;">
+                                ADD TO CART
+                            </button>
+                        </form>
+                       
                     </div>
                 </div>
             </div>

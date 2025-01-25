@@ -1746,11 +1746,22 @@ ol {
 }
 
 .product__details__text .heart-icon {
-	display: inline-block;
-	font-size: 16px;
-	color: #6f6f6f;
-	padding: 13px 16px 13px;
-	background: #f5f5f5;
+	display: block;
+    font-size: 16px;
+    
+    padding: 13px 16px 13px;
+    background: #f5f5f5;
+    margin-top: -59px;
+    width: 190px;
+    margin-left: 168px;
+    border: 2px solid #2b2a2a;
+	text-align: center;
+	background-color: palevioletred;
+	
+	height: 54px;
+	border: none; 
+	color: white; 
+	font-weight: bold;
 }
 
 .product__details__text ul {
@@ -1974,8 +1985,10 @@ ol {
 
 .shoping__cart__table table tbody tr td.shoping__cart__item__close span {
 	font-size: 24px;
-	color: #b2b2b2;
-	cursor: pointer;
+    color: #fff5f5;
+    cursor: pointer;
+    background: red;
+    border-radius: 50%
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__quantity {

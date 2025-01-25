@@ -227,3 +227,6 @@ maxamount.val('₹ ' + rangeSlider.slider("values", 1));
     });
 
 })(jQuery);
+    
+    
+    

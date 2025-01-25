@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mainshop',
     'accounts',
+    'cart',
     'django_summernote',
 ]
 
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cart.middleware.CartMiddleware',
 ]
 
 ROOT_URLCONF = 'ECOMMERCE.urls'
@@ -66,6 +68,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "mainshop.nav.navigation",
+              
             ],
         },
     },
