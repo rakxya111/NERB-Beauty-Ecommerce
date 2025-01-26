@@ -68,6 +68,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "mainshop.nav.navigation",
+                "cart.nav.counter",
+                "cart.nav.favourite_counter",
               
             ],
         },

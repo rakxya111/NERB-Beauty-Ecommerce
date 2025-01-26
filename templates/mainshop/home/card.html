@@ -1,0 +1,33 @@
+{% load static %}
+<div class="container-fluid">
+    <div class="section-title">
+        <h2>Top Brands</h2>
+    </div>
+    <div class="row">
+        {% for brand in brands|slice:6 %}
+        <div class="col-lg-2 col-md-6 col-sm-12 mb-3">
+            <div class="card animated-card">
+                <a href="{% url 'product-by-brand' brand.id %}"><img class="card-img-top" src="{{ brand.brand_image.url }}" alt="Card image cap"></a>
+                <div class="card-body">
+                    <a href="{% url 'product-by-brand' brand.id %}"><h5 class="card-title">{{ brand.brand_name }}</h5></a>
+                    <p class="card-text">
+                        Lorem ipsum dolor sit amet consectetur
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add this CSS to the page or your stylesheet -->
+<style>
+    .animated-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+    }
+
+    .animated-card:hover {
+        transform: translateY(-10px);  /* Moves the card up by 10px */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);  /* Adds a shadow when hovered */
+    }
+</style>

@@ -46,7 +46,10 @@
         </div> -->
         
         {% if product.stock <= 0 %}
-        <h6 class="btn btn-danger" style="width:150px; height:53px; border-radius:1px; font-size:bolder;">OUT OF STOCK </h6>
+        <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: 40px; background-color: red;">
+            Out of Stock
+        </button>
+       
         {% else %}
        
         
@@ -57,7 +60,15 @@
             </button>
         </form>
         {% endif %}
-        <a href="#" class="heart-icon">ADD TO FAVOURITE</a>
+        
+        <form method="POST" action="{% url 'add_favourites' product.id %}" style="width: 500px; margin-top: -57px; margin-left: 180px; ">
+            {% csrf_token %}
+            <button type="submit" class="primary-btn" style="border: none;  background-color: palevioletred;">
+                ADD TO FAVOURITE
+            </button>
+        </form>
+
+       
         <ul>
             <li><b>Availability</b> 
             <span>

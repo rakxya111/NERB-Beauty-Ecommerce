@@ -1,94 +1,48 @@
 {% load static %}
 <div class="row">
     {% if page_obj.object_list %}
-       
-    {% for product in page_obj %}
-    
-    <div class="col-lg-4 col-md-6 col-sm-6">
-    
-        {% if product.is_sale %}
-    
-        <div class="product__item">
-                <div class="product__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}" data-href="{% url 'product-detail' product.pk %}">
-                    <div class="badge text-light position-absolute" style="top: 0.5rem; right: 0.5rem; width: 50px; background-color: red; height: 20px; font-size:small;"> On Sale </div>
-    
-                    {% if product.stock <= 0 %}
-                    
-                    <h6 style="color: red; font-weight: bold;"> Out of Stock</h1>
-                    <ul class="product__item__pic__hover">
-                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                    </ul>
-
-                    {% else %}
-    
-                    <ul class="product__item__pic__hover">
-                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
+        {% for product in page_obj %}
+            <div class="col-lg-3 col-md-4 col-sm-6"> <!-- Adjusted column classes -->
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}" data-href="{% url 'product-detail' product.pk %}">
+                        {% if product.is_sale and product.stock > 0 %}
+                            <div class="badge text-light position-absolute" style="top: 0.7rem; right: 0.6rem; width: 50px; background-color: red; height: 20px; font-size: small;">On Sale</div>
+                            <h6 style="font-size: large; font-weight: bold; color: rgb(255, 0, 0); margin-top: 10px;  background-color: rgba(240, 248, 255, 0.515);">{{ product.discount }}% off</h6>
+                        {% endif %}
+                        {% if product.stock <= 0 %}
+                            <h6 style="color: red; font-weight: bold;">Out of Stock</h6>
+                        {% endif %}
+                    </div>
+                    <div class="product__item__text">
+                        <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:2 }}</a></h6>
+                        <h5>Rs. {{ product.sale_price }} &nbsp; <strike>Rs. {{ product.price }}</strike></h5>
                         
-                    </ul>
-    
-                    {% endif %}
-    
-                </div>
-                <div class="product__item__text">
-                    <h6 style=" font-size:large; font-weight: bold; color: rgb(255, 0, 0);">{{ product.discount }} % off</h6>
-                    <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name }}</a></h6>
-                    <h5>Rs. {{ product.sale_price }} &nbsp; <strike> Rs. {{ product.price }}</strike></h5>
-                    <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -105px; margin-top: 10px;">
-                        {% csrf_token %}
-                        <button type="submit" class="primary-btn" style="border: none; ">
-                            ADD TO CART
-                        </button>
-                       
-                    </form>
-
-                </div>
-            </div>
-    
-            {% else %}
-    
-            <div class="product__item"> 
-                <div class="product__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}" data-href="{% url 'product-detail' product.pk %}">
-    
-                    {% if product.stock <= 0 %}
-                    
-                    <h6 style="color: red; font-weight: bold;"> Out of Stock</h1>
-                    <ul class="product__item__pic__hover">
-                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                    </ul>
-
-    
-                    {% else %}
-    
-                    <ul class="product__item__pic__hover">
-                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                   </ul>
-
-                   {% endif %}
-
-                </div>
-                <div class="product__item__text">
-                    <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:8 }}</a></h6>
-                    <h5>Rs. {{ product.price }}</h5>
-                    <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -105px; margin-top: 40px;">
-                        {% csrf_token %}
-                        <button type="submit" class="primary-btn" style="border: none;">
-                            ADD TO CART
-                        </button>
-                    </form>
+                        <form method="POST" action="{% url 'add_favourites' product.id %}" style="margin-bottom: -70px; margin-left: 160px;">
+                            {% csrf_token %}
+                            <button type="submit" class="primary-btn" style="border: none; background: none; color: blueviolet;">
+                                <i class="fa fa-heart"></i>
+                            </button>
+                        </form>
+                        
+                        {% if product.stock > 0 %}
+                            <form method="POST" action="{% url 'add_to_cart' product.id %}" style="margin-top: 80px;">
+                                {% csrf_token %}
+                                <button type="submit" class="primary-btn" style="border: none;">
+                                    ADD TO CART
+                                </button>
+                            </form>
+                        {% else %}
+                            <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: 80px;">
+                                Out of Stock
+                            </button>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-
-            {% endif %}
-
-        </div>
-
         {% endfor %}
-
-        {% else %}
-
-        <p>  No products found.</p>
-
-        {% endif %}
+    {% else %}
+        <p>No products found.</p>
+    {% endif %}
 </div>
 
 
@@ -104,5 +58,3 @@
         });
     });
 </script>
-
-    

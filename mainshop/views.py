@@ -14,16 +14,14 @@ class HomeView(ListView):
     model = Product
     template_name = "mainshop/home.html"
     context_object_name = "products"
-    queryset = Product.objects.filter(
-        is_available=True , stock__gte=1
-    ).order_by("-created_date")[:8]
+    queryset = Product.objects.filter(is_available=True, stock__gte=1).order_by("-created_date")[:12]
+
 
 class FeaturedProductsView(ListView):
     model = Product
-    template_name = 'mainshop/base.html'
+    template_name = 'mainshop/featured_products.html'  # Make sure the template is correct
     context_object_name = 'products'
-    paginate_by = 8
-
+    paginate_by = 12  # Pagination, 12 products per page
 
     def get_queryset(self):
         category_slug = self.kwargs.get("category_slug", None)
@@ -38,29 +36,30 @@ class FeaturedProductsView(ListView):
         context['selected_category'] = self.kwargs.get("category_slug", 'all')
         return context
 
+
 def ajax_featured_products(request, category_slug):
     if category_slug == 'all':
-        products = Product.objects.filter(is_available=True).order_by("-created_date")[:8]
+        products = Product.objects.filter(is_available=True).order_by("-created_date")[:12]
     else:
         category = get_object_or_404(Category, slug=category_slug)
-        products = Product.objects.filter(is_available=True, category=category).order_by("-created_date")[:8]
+        products = Product.objects.filter(is_available=True, category=category).order_by("-created_date")[:12]
     
     products_data = [
         {
             'product_name': product.product_name,
-            'price': product.price,
-            'discount' : product.discount,
             'price': float(product.price) if product.price else 0.0,
-            'sale_price': float(product.sale_price()) if product.is_sale else 0.0,  # Call the method
+            'sale_price': float(product.sale_price()) if product.is_sale else 0.0,  # Call the method correctly
             'discount': float(product.discount) if product.discount else 0.0,
             'is_sale': product.is_sale,
             'image_url': product.images.first().image.url if product.images.exists() else '',
             'category_slug': product.category.slug,
-            'pk': product.pk,  
+            'stock': product.stock,
+            'pk': product.pk,
         }
         for product in products
     ]
     return JsonResponse({'products': products_data})
+
 
 
 
@@ -278,3 +277,5 @@ class FlashSaleView(ListView):
         context["product_count"] = self.get_queryset().count()
         context["request"] = self.request  # Pass request to template
         return context
+    
+

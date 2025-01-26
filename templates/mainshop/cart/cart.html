@@ -39,8 +39,8 @@
                                 {% for item in cart_items %}
                                 <tr>
                                     <td class="shoping__cart__item">
-                                        <img src="{{ item.product.images.first.image.url }}" alt="" style="height: 50px; width: auto;">
-                                        <h5>{{ item.product.product_name|truncatewords:6 }}</h5>
+                                        <img src="{{ item.product.images.first.image.url }}" alt="" style="height: 100px; width: auto;">
+                                       <a href="{% url 'product-detail' item.product.id  %}"> <h5>{{ item.product.product_name|truncatewords:6 }}</h5></a>
                                     </td>
                                     <td class="shoping__cart__price">
                                         Rs {{ item.product.sale_price }}

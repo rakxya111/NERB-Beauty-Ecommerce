@@ -1,6 +1,9 @@
 {% load static %}
+
+
+
 <section class="featured spad">
-    <div class="container">
+    <div class="container-fluid" >
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-title">
@@ -21,8 +24,8 @@
             </div>
         </div>
         <div class="row featured__filter" id="featured-products-container">
-            {% for product in products|slice:":8" %}
-            <div class="col-lg-3 col-md-4 col-sm-6 mix {{ product.category.slug }}">
+            {% for product in products %}
+            <div class="col-lg-2 col-md-4 col-sm-6 mix {{ product.category.slug }}"  >
                 <div class="featured__item">
                     <div class="featured__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}">
                         {% if product.is_sale %}
@@ -30,13 +33,10 @@
                             {{ product.discount }}% Off
                         </div>
                         {% endif %}
-                        <ul class="featured__item__pic__hover">
-                            <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                            <!-- <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li> -->
-                        </ul>
+
                     </div>
                     <div class="featured__item__text">
-                        <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:4 }}</a></h6>
+                        <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:3 }}</a></h6>
                         
                         <h5>
                             {% if product.is_sale %}
@@ -45,13 +45,20 @@
                             Rs. {{ product.price }}
                             {% endif %}
                         </h5>
-                      
-                        <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -105px; margin-top: 20px;">
+                        <form method="POST" action="{% url 'add_favourites' product.id %}" style="width: 500px; margin-top: -30px; margin-left: -40px; ">
+                            {% csrf_token %}
+                            <button type="submit" class="primary-btn" style="border: none; background:none; color: blueviolet;">
+                                <i class="fa fa-heart"></i>
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -150px; margin-top: 30px;">
                             {% csrf_token %}
                             <button type="submit" class="primary-btn" style="border: none;">
                                 ADD TO CART
                             </button>
                         </form>
+                        
+
                        
                     </div>
                 </div>
@@ -65,6 +72,11 @@
 
 <script src="{% static 'mainshop/assets/js/jquery-3.6.0.min.js' %}"></script>
 <script>
+function truncateWords(text, wordLimit) {
+    const words = text.split(' ');
+    return words.length > wordLimit ? words.slice(0, wordLimit).join(' ') + '...' : text;
+}
+
 $(document).ready(function () {
     $('.category-link').on('click', function (e) {
         e.preventDefault();
@@ -86,23 +98,41 @@ $(document).ready(function () {
                            </div>`
                         : '';
 
+                        var buttonsHtml = `
+                        <form method="POST" action="/cart/add_favourites/${product.pk}/" style="margin-left: 220px; margin-top: 5px;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${getCsrfToken()}">
+                            <button type="submit" class="primary-btn" style="border: none; background: none; color: blueviolet;">
+                                <i class="fa fa-heart"></i>
+                            </button>
+                        </form>
+                        ${product.stock > 0 ? `
+                        <form method="POST" action="/cart/add_to_cart/${product.pk}/" style="margin-top: -8px;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${getCsrfToken()}">
+                            <button type="submit" class="primary-btn" style="border: none;">
+                                ADD TO CART
+                            </button>
+                        </form>` : `
+                        <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: -8px;">
+                            Out of Stock
+                        </button>`}
+`;
+
+
+
                     var productHtml = `
                         <div class="col-lg-3 col-md-4 col-sm-6 mix ${product.category_slug}">
                             <div class="featured__item">
                                 <div class="featured__item__pic set-bg" data-setbg="${product.image_url}">
                                     ${discountHtml}
-                                    <ul class="featured__item__pic__hover">
-                                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                                    </ul>
                                 </div>
                                 <div class="featured__item__text">
-                                    <h6><a href="/product-detail/${product.pk}/">${product.product_name}</a></h6>
+                                    <h6><a href="/product-detail/${product.pk}/">${truncateWords(product.product_name, 4)}</a></h6>
                                     <h5>
                                         ${product.is_sale 
                                             ? `Rs. ${product.sale_price.toFixed(2)} <strike>Rs. ${product.price}</strike>` 
                                             : `Rs. ${product.price}`}
                                     </h5>
+                                    ${buttonsHtml}
                                 </div>
                             </div>
                         </div>`;
@@ -121,6 +151,13 @@ $(document).ready(function () {
         });
     });
 });
+function getCsrfToken() {
+    const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
+    return tokenElement ? tokenElement.value : '';
+}
+
+
+
 </script>
 
     

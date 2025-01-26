@@ -1,12 +1,13 @@
 from django.shortcuts import redirect
 from django.views import View
-from .models import Product, Cart, CartItem
+from .models import Product, Cart, CartItem, Favourite
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 
 class AddToCartView(View):
     def get_cart(self, request):
@@ -114,8 +115,36 @@ class CartView(View):
         return render(request, 'mainshop/cart/cart.html', context)
 
 
+class AddFavouriteView(View):
+    def post(self,request,product_id):
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise Http404("Product does not exist")
+        
+        fav = Favourite.objects.get_or_create(user=request.user,product=product)
+        created = fav[1]
 
+        if created:
+            messages.success(request,"Product added to favourite")
+        
+        return redirect('favourite_list')
 
+class RemoveFromFavView(View):
+    def post(self,request,product_id):
+        product = get_object_or_404(Product,id=product_id)
+        favourite = Favourite.objects.filter(user=request.user,product=product)
+        favourite.delete()
+        messages.success(request,"Product removed from favourite")
+        return redirect('favourite_list')
+
+class FavouriteView(View):
+    def get(self,request):
+        favourites = Favourite.objects.filter(user=request.user)
+        context = {
+            'favourites':favourites
+        }
+        return render(request,'mainshop/favourite/favourite.html',context)
 
 
 

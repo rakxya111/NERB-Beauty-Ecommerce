@@ -1,0 +1,52 @@
+{% load static %}
+<section class="featured spad">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2> Top 4 Best Selling Products</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row featured__filter" id="featured-products-container">
+            {% for product in products|slice:":4" %}
+                {% if product.is_sale %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mix {{ product.category.slug }}">
+                        <div class="featured__item" style="width: 290px; margin-left: 30px; margin-right: 50px;">
+                            <div class="featured__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}">
+                                {% if product.is_sale %}
+                                <div style="padding: 10px; background-color: red; font-size: small; font-weight: bold; color: aliceblue; width: auto; position: absolute;">
+                                    {{ product.discount }}% Off
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="featured__item__text">
+                                <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:4 }}</a></h6>
+                                
+                                <h5>
+                                    {% if product.is_sale %}
+                                    Rs. {{ product.sale_price|floatformat:2 }} <strike>Rs. {{ product.price }}</strike>
+                                    {% else %}
+                                    Rs. {{ product.price }}
+                                    {% endif %}
+                                </h5>
+                                <form method="POST" action="{% url 'add_favourites' product.id %}" style="width: 500px; margin-top: -30px; margin-left: 9px;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="primary-btn" style="border: none; background:none; color: blueviolet;">
+                                        <i class="fa fa-heart"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -110px; margin-top: 10px;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="primary-btn" style="border: none;">
+                                        ADD TO CART
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
