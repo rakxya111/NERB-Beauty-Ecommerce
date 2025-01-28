@@ -29,6 +29,7 @@
                             <thead >
                                 <tr>
                                     <th class="shoping__product">Products</th>
+                                    <th></th>
                                     <th>Price</th>
                                     <th>Add To Cart</th>
                                     <th style="display: none;">Total</th>
@@ -42,6 +43,14 @@
                                         <img src="{{ item.product.images.first.image.url }}" alt="" style="height: 100px; width: auto;">
                                         <a href="{% url 'product-detail' item.product.id  %}"><h5>{{ item.product.product_name|truncatewords:6 }}</h5></a>
                                     </td>
+                                    
+                                    <td class="shoping__cart__item" style="margin-left: 50px;" >
+                                        <a href="{% url 'product-detail' item.product.id %}">
+                                            <h5 style="color: red;">View product</h5>
+                                        </a>
+                                    </td>
+
+
                                     <td class="shoping__cart__price">
                                         Rs {{ item.product.sale_price }}
                                     </td>

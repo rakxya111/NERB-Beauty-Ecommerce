@@ -12,27 +12,34 @@
                         {% if product.stock <= 0 %}
                             <h6 style="color: red; font-weight: bold;">Out of Stock</h6>
                         {% endif %}
+                        <ul class="product__item__pic__hover">
+                            <!-- Add to Favourites Form -->
+                            <li>
+                                <form method="POST" action="{% url 'add_favourites' product.id %}" style="margin: 0; padding: 0; color: red;">
+                                    {% csrf_token %}
+                                    <button type="submit" style="border: none; background: none; color: inherit; cursor: pointer;" title="Add to Favourites">
+                                        <i class="fa fa-heart"></i>
+                                    </button>
+                                </form>
+                            </li>
+
+                        </ul>
                     </div>
                     <div class="product__item__text">
                         <h6><a href="{% url 'product-detail' product.pk %}">{{ product.product_name|truncatewords:2 }}</a></h6>
                         <h5>Rs. {{ product.sale_price }} &nbsp; <strike>Rs. {{ product.price }}</strike></h5>
                         
-                        <form method="POST" action="{% url 'add_favourites' product.id %}" style="margin-bottom: -70px; margin-left: 160px;">
-                            {% csrf_token %}
-                            <button type="submit" class="primary-btn" style="border: none; background: none; color: blueviolet;">
-                                <i class="fa fa-heart"></i>
-                            </button>
-                        </form>
+                        
                         
                         {% if product.stock > 0 %}
-                            <form method="POST" action="{% url 'add_to_cart' product.id %}" style="margin-top: 80px;">
+                            <form method="POST" action="{% url 'add_to_cart' product.id %}" style="margin-top: 40px;">
                                 {% csrf_token %}
                                 <button type="submit" class="primary-btn" style="border: none;">
                                     ADD TO CART
                                 </button>
                             </form>
                         {% else %}
-                            <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: 80px;">
+                            <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: 40px;">
                                 Out of Stock
                             </button>
                         {% endif %}

@@ -180,8 +180,14 @@ ol {
 .primary-btn:hover {
 	transform: scale(1.05);
     background: rgb(186, 34, 59); /* Change background color to pink on hover */
+	
     color: #ededed; /* Optional: change text color for better contrast */
 }
+.primary-btn .fa-heart:hover {
+	color: red;
+}
+
+
 
 
 .site-btn {
@@ -655,7 +661,9 @@ ol {
 	color: #4c3660;
 	line-height: 39px;
 	display: block;
+	transition: all 0.3s ease; 
 }
+
 
 .hero__search {
 	overflow: hidden;
@@ -1148,15 +1156,23 @@ ol {
 }
 
 .sidebar__item ul li a {
-	font-size: 16px;
-	color: #ffffff;
-	line-height: 39px;
-	display: block;
-	border: 1px solid rgb(255, 255, 255);
-	padding-left: 30px;
+    font-size: 16px;
+    color: #ffffff;
+    line-height: 39px;
+    display: block;
+    border: 1px solid rgb(255, 255, 255);
+    padding-left: 30px;
     background-color: #734f96;
-	width: 150px;
+    width: 150px;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
+
+.sidebar__item ul li a:hover {
+    background-color: red; /* Change text color to red */
+    transform: translateX(10px); /* Move a little to the right */
+    /* background-color: #5a3c7a; Optional: Slightly change background color on hover */
+}
+
 
 .sidebar__item .latest-product__text {
 	position: relative;
@@ -2011,7 +2027,8 @@ ol {
 	font-size: 18px;
 	color: #1c1c1c;
 	font-weight: 700;
-	width: 100px;
+	width: 130px;
+	margin-right: 10px ;
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__total {
@@ -2034,11 +2051,13 @@ ol {
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__quantity {
-	width: 225px;
+	width: 50px;
+	margin-left: 100px;
+	margin-right: 10px;
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__quantity .pro-qty {
-	width: 120px;
+	width: 100px;
 	height: 40px;
 }
 
@@ -2080,7 +2099,7 @@ ol {
 }
 
 .shoping__discount form input {
-	width: 255px;
+	width: 200px;
 	height: 46px;
 	border: 1px solid #cccccc;
 	font-size: 16px;
@@ -2096,6 +2115,8 @@ ol {
 
 .shoping__discount form button {
 	padding: 15px 30px 11px;
+	width: 200px;
+	margin-top: 10px;
 	font-size: 12px;
 	letter-spacing: 4px;
 	background: #6f6f6f;

@@ -28,10 +28,24 @@
             <div class="col-lg-2 col-md-4 col-sm-6 mix {{ product.category.slug }}"  >
                 <div class="featured__item">
                     <div class="featured__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}">
+                        <ul class="featured__item__pic__hover" style="color: red;">
+                            <!-- Add to Favourites Form -->
+                            <li>
+                                <form method="POST" action="{% url 'add_favourites' product.id %}" ">
+                                    {% csrf_token %}
+                                    <button type="submit" style="border: none; background: none; color: inherit; cursor: pointer;" title="Add to Favourites">
+                                        <i class="fa fa-heart"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
                         {% if product.is_sale %}
                         <div style="padding: 10px; background-color: red; font-size: small; font-weight: bold; color: aliceblue; width: auto; position: absolute;">
                             {{ product.discount }}% Off
                         </div>
+                        
+
+                        
                         {% endif %}
 
                     </div>
@@ -45,12 +59,8 @@
                             Rs. {{ product.price }}
                             {% endif %}
                         </h5>
-                        <form method="POST" action="{% url 'add_favourites' product.id %}" style="width: 500px; margin-top: -30px; margin-left: -40px; ">
-                            {% csrf_token %}
-                            <button type="submit" class="primary-btn" style="border: none; background:none; color: blueviolet;">
-                                <i class="fa fa-heart"></i>
-                            </button>
-                        </form>
+                        
+                       
                         <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -150px; margin-top: 30px;">
                             {% csrf_token %}
                             <button type="submit" class="primary-btn" style="border: none;">
@@ -78,6 +88,7 @@ function truncateWords(text, wordLimit) {
 }
 
 $(document).ready(function () {
+    // Handle category link clicks
     $('.category-link').on('click', function (e) {
         e.preventDefault();
         var category = $(this).parent().data('category');
@@ -85,6 +96,7 @@ $(document).ready(function () {
             ? '{% url "ajax-featured-products" "all" %}' 
             : '{% url "ajax-featured-products" "CATEGORY_SLUG" %}'.replace("CATEGORY_SLUG", category);
 
+        // AJAX request to fetch products by category
         $.ajax({
             url: url,
             success: function (data) {
@@ -98,32 +110,40 @@ $(document).ready(function () {
                            </div>`
                         : '';
 
-                        var buttonsHtml = `
-                        <form method="POST" action="/cart/add_favourites/${product.pk}/" style="margin-left: 220px; margin-top: 5px;">
-                            <input type="hidden" name="csrfmiddlewaretoken" value="${getCsrfToken()}">
-                            <button type="submit" class="primary-btn" style="border: none; background: none; color: blueviolet;">
-                                <i class="fa fa-heart"></i>
-                            </button>
-                        </form>
-                        ${product.stock > 0 ? `
-                        <form method="POST" action="/cart/add_to_cart/${product.pk}/" style="margin-top: -8px;">
-                            <input type="hidden" name="csrfmiddlewaretoken" value="${getCsrfToken()}">
-                            <button type="submit" class="primary-btn" style="border: none;">
-                                ADD TO CART
-                            </button>
-                        </form>` : `
-                        <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: -8px;">
-                            Out of Stock
-                        </button>`}
-`;
+                    var favouriteHtml = `
+                        <ul class="featured__item__pic__hover">
+                            <li>
+                                <form method="POST" action="/cart/add_favourites/${product.pk}/">
+                                    <input type="hidden" name="csrfmiddlewaretoken" value="${getCsrfToken()}">
+                                    <button type="submit" style="border: none; background: none; color: red; cursor: pointer;" title="Add to Favourites">
+                                        <i class="fa fa-heart"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    `;
 
-
+                    var addToCartHtml = product.stock > 0 
+                        ? `
+                            <form method="POST" action="/cart/add_to_cart/${product.pk}/" style="margin-top: 10px;">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="${getCsrfToken()}">
+                                <button type="submit" class="primary-btn" style="border: none;">
+                                    ADD TO CART
+                                </button>
+                            </form>
+                          `
+                        : `
+                            <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: 10px;">
+                                Out of Stock
+                            </button>
+                          `;
 
                     var productHtml = `
                         <div class="col-lg-3 col-md-4 col-sm-6 mix ${product.category_slug}">
                             <div class="featured__item">
                                 <div class="featured__item__pic set-bg" data-setbg="${product.image_url}">
                                     ${discountHtml}
+                                    ${favouriteHtml}
                                 </div>
                                 <div class="featured__item__text">
                                     <h6><a href="/product-detail/${product.pk}/">${truncateWords(product.product_name, 4)}</a></h6>
@@ -132,7 +152,7 @@ $(document).ready(function () {
                                             ? `Rs. ${product.sale_price.toFixed(2)} <strike>Rs. ${product.price}</strike>` 
                                             : `Rs. ${product.price}`}
                                     </h5>
-                                    ${buttonsHtml}
+                                    ${addToCartHtml}
                                 </div>
                             </div>
                         </div>`;
@@ -151,10 +171,14 @@ $(document).ready(function () {
         });
     });
 });
+
+// Function to get CSRF token
 function getCsrfToken() {
     const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
     return tokenElement ? tokenElement.value : '';
 }
+
+
 
 
 

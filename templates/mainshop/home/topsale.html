@@ -14,6 +14,17 @@
                     <div class="col-lg-3 col-md-4 col-sm-6 mix {{ product.category.slug }}">
                         <div class="featured__item" style="width: 290px; margin-left: 30px; margin-right: 50px;">
                             <div class="featured__item__pic set-bg" data-setbg="{{ product.images.first.image.url }}">
+                                <ul class="featured__item__pic__hover" style="color: red;">
+                                    <!-- Add to Favourites Form -->
+                                    <li>
+                                        <form method="POST" action="{% url 'add_favourites' product.id %}" ">
+                                            {% csrf_token %}
+                                            <button type="submit" style="border: none; background: none; color: inherit; cursor: pointer;" title="Add to Favourites">
+                                                <i class="fa fa-heart"></i>
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
                                 {% if product.is_sale %}
                                 <div style="padding: 10px; background-color: red; font-size: small; font-weight: bold; color: aliceblue; width: auto; position: absolute;">
                                     {{ product.discount }}% Off
@@ -30,12 +41,7 @@
                                     Rs. {{ product.price }}
                                     {% endif %}
                                 </h5>
-                                <form method="POST" action="{% url 'add_favourites' product.id %}" style="width: 500px; margin-top: -30px; margin-left: 9px;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="primary-btn" style="border: none; background:none; color: blueviolet;">
-                                        <i class="fa fa-heart"></i>
-                                    </button>
-                                </form>
+                               
                                 <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px; margin-left: -110px; margin-top: 10px;">
                                     {% csrf_token %}
                                     <button type="submit" class="primary-btn" style="border: none;">
