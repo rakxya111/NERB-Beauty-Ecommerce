@@ -18,6 +18,16 @@ class HomeView(ListView):
     def get_queryset(self):
         return Product.objects.filter(is_available=True, stock__gte=1).order_by("-created_date")[:12]
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # Ensure user is authenticated before accessing user-related attributes
+        context["is_authenticated"] = user.is_authenticated
+        if user.is_authenticated:
+            context["username"] = user.username
+
+        return context
 
 class FeaturedProductsView(ListView):
     model = Product

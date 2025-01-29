@@ -2,104 +2,125 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from .models import Product, Cart, CartItem, Favourite
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse, Http404
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.urls import reverse
 
 
 
-class AddToCartView(LoginRequiredMixin, View):
+# Helper function to get session-based cart
+def get_session_cart(request):
+    if not request.session.session_key:
+        request.session.create()
+    cart_id = request.session.get('cart_id')
+    cart, created = Cart.objects.get_or_create(cart_id=cart_id)
+    return cart
+
+# Function to transfer items from session cart to user cart
+def transfer_cart_items_to_user_cart(request, user_cart):
+    session_cart = get_session_cart(request)
+    if session_cart:
+        for session_cart_item in CartItem.objects.filter(cart=session_cart):
+            # Transfer session cart items to the user's cart
+            cart_item, created = CartItem.objects.get_or_create(
+                cart=user_cart,
+                product=session_cart_item.product,
+                defaults={'quantity': session_cart_item.quantity}
+            )
+            if not created:
+                cart_item.quantity += session_cart_item.quantity
+                cart_item.save()
+        
+        # After transferring items, clear the session cart
+        session_cart.cartitem_set.all().delete()
+        request.session['cart_id'] = None  # Clear session cart ID
+
+# AddToCartView - only accessible for authenticated users
+@method_decorator(login_required, name='dispatch')
+class AddToCartView(View):
     def get_cart(self, request):
-        if not request.session.session_key:
-            request.session.create()
-        
-        try:
-            # Try to get the cart based on the user
-            cart = Cart.objects.get(user=request.user)
-        except Cart.DoesNotExist:
-            # If no cart for the user, try to get it based on the session
-            try:
-                cart = Cart.objects.get(cart_id=request.session.session_key)
-            except Cart.DoesNotExist:
-                # If no cart for the session, create a new cart
-                cart = Cart.objects.create(cart_id=request.session.session_key, user=request.user)
-        
+        if request.user.is_authenticated:
+            # For logged-in users, use the user-based cart
+            cart, created = Cart.objects.get_or_create(user=request.user)
+        else:
+            # For anonymous users, use session-based cart
+            cart = get_session_cart(request)
         return cart
 
     def get_cart_item(self, product, cart):
-        try:
-            cart_item = CartItem.objects.get(product=product, cart=cart)
+        cart_item, created = CartItem.objects.get_or_create(
+            product=product, cart=cart, defaults={'quantity': 1}
+        )
+        if not created:
             cart_item.quantity += 1
             cart_item.save()
-        except CartItem.DoesNotExist:
-            cart_item = CartItem.objects.create(
-                product=product,
-                quantity=1,
-                cart=cart,
-            )
         return cart_item
 
     def post(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
         cart = self.get_cart(request)
         self.get_cart_item(product, cart)
-        return redirect('cart')
+        return redirect(reverse('cart'))
 
-class RemoveFromCartView(LoginRequiredMixin, View):
+# RemoveFromCartView - to remove product from cart
+@method_decorator(login_required, name='dispatch')
+class RemoveFromCartView(View):
     def get_cart(self, request):
-        if not request.session.session_key:
-            request.session.create()
-        
-        try:
-            return Cart.objects.get(user=request.user)
-        except Cart.DoesNotExist:
-            return Cart.objects.get(cart_id=request.session.session_key)
-
-    def post(self, request, product_id):
-        cart = self.get_cart(request)
-        if not cart:
-            return redirect('cart')
-        
-        product = get_object_or_404(Product, id=product_id)
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        
-        if cart_item.quantity > 1:
-            cart_item.quantity -= 1
-            cart_item.save()
+        cart = None
+        if request.user.is_authenticated:
+            cart = Cart.objects.filter(user=request.user).first()
         else:
-            cart_item.delete()
-
-        return redirect('cart')
-
-class RemoveCartView(LoginRequiredMixin, View):
-    def get_cart(self, request):
-        if not request.session.session_key:
-            request.session.create()
-        
-        try:
-            return Cart.objects.get(user=request.user)
-        except Cart.DoesNotExist:
-            return Cart.objects.get(cart_id=request.session.session_key)
+            cart = get_session_cart(request)
+        return cart
 
     def post(self, request, product_id):
         cart = self.get_cart(request)
         if not cart:
-            return redirect('cart')
-        
-        product = get_object_or_404(Product, id=product_id)
-        cart_item = CartItem.objects.get(product=product, cart=cart)
-        cart_item.delete()
-        return redirect('cart')
+            return redirect(reverse('cart'))
 
-class CartView(LoginRequiredMixin, View):
+        product = get_object_or_404(Product, id=product_id)
+        cart_item = CartItem.objects.filter(product=product, cart=cart).first()
+
+        if cart_item:
+            if cart_item.quantity > 1:
+                cart_item.quantity -= 1
+                cart_item.save()
+            else:
+                cart_item.delete()
+
+        return redirect(reverse('cart'))
+
+# RemoveCartView - to clear entire cart
+@method_decorator(login_required, name='dispatch')
+class RemoveCartView(View):
     def get_cart(self, request):
-        if not request.session.session_key:
-            request.session.create()
-        
-        try:
-            return Cart.objects.get(user=request.user)
-        except Cart.DoesNotExist:
-            return Cart.objects.get(cart_id=request.session.session_key)
+        cart = None
+        if request.user.is_authenticated:
+            cart = Cart.objects.filter(user=request.user).first()
+        else:
+            cart = get_session_cart(request)
+        return cart
+
+    def post(self, request, product_id):
+        cart = self.get_cart(request)
+        if not cart:
+            return redirect(reverse('cart'))
+
+        product = get_object_or_404(Product, id=product_id)
+        CartItem.objects.filter(product=product, cart=cart).delete()
+        return redirect(reverse('cart'))
+
+# CartView - to show the cart items
+@method_decorator(login_required, name='dispatch')
+class CartView(View):
+    def get_cart(self, request):
+        if request.user.is_authenticated:
+            cart = Cart.objects.filter(user=request.user).first()
+        else:
+            cart = get_session_cart(request)
+        return cart
 
     def get(self, request, *args, **kwargs):
         total = 0
@@ -107,16 +128,15 @@ class CartView(LoginRequiredMixin, View):
         cart_items = None
         shipping = 0
         grand_total = 0
-        try:
-            cart = self.get_cart(request)
+
+        cart = self.get_cart(request)
+        if cart:
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
             for cart_item in cart_items:
                 total += (cart_item.product.price * cart_item.quantity)
                 quantity += cart_item.quantity
-            shipping = 75 if cart_items else 0  # Only add shipping if there are items
+            shipping = 75 if cart_items else 0
             grand_total = total + shipping
-        except ObjectDoesNotExist:
-            pass  # Ignore if the cart doesn't exist
 
         context = {
             'total': total,
@@ -128,7 +148,10 @@ class CartView(LoginRequiredMixin, View):
         return render(request, 'mainshop/cart/cart.html', context)
 
 
-class AddFavouriteView(LoginRequiredMixin, View):
+
+
+@method_decorator(login_required, name='dispatch')
+class AddFavouriteView(View):
     def post(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
         fav, created = Favourite.objects.get_or_create(user=request.user, product=product)
@@ -136,20 +159,30 @@ class AddFavouriteView(LoginRequiredMixin, View):
             messages.success(request, "Product added to favourite")
         else:
             messages.info(request, "Product is already in your favourites")
-        
+
         return redirect('favourite_list')
 
-class RemoveFromFavView(LoginRequiredMixin, View):
+
+@method_decorator(login_required, name='dispatch')
+class RemoveFromFavView(View):
     def post(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
         Favourite.objects.filter(user=request.user, product=product).delete()
         messages.success(request, "Product removed from favourite")
         return redirect('favourite_list')
 
-class FavouriteView(LoginRequiredMixin, View):
+
+
+class FavouriteView(View):
     def get(self, request):
+        if not request.user.is_authenticated:
+            messages.warning(request, "You must be logged in to view favourites.")
+            return redirect('login')  # Redirect to login page
+        
         favourites = Favourite.objects.filter(user=request.user)
         context = {
             'favourites': favourites,
         }
         return render(request, 'mainshop/favourite/favourite.html', context)
+
+
