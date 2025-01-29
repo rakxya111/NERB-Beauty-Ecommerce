@@ -5,3 +5,4 @@ class CartMiddleware(MiddlewareMixin):
         if not request.session.session_key:
             request.session.create()
         request.cart_id = request.session.session_key
+

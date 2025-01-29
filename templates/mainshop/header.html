@@ -28,13 +28,25 @@
                                 <li><a href="#">Admin</a></li>
                             </ul>
                         </div>
+                        {% if user.is_authenticated %}
                         <div class="header__top__right__auth">
-                            <a href="{% url 'login' %}"><i class="fa fa-user"></i> Login  |</a>
+                            <small>Welcome {{ user.first_name|default:"guest" }} jii !!</small>
+
+                            <a href="{% url 'logout' %}" ><i class="fa fa-sign-out" aria-hidden="true"></i> Logout |</a>
+                        </div>
+                        <div class="header__top__right__auth">
+                            <a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> Dashboard</a>
+                        </div>
+                    {% else %}
+                        <div class="header__top__right__auth">
+                            <small>Welcome guest!</small>
+                            <a href="{% url 'login' %}"><i class="fa fa-user"></i> Login |</a>
                         </div> 
                         <div class="header__top__right__auth">
-                            
-                             <a href="{% url 'register' %}"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a>
+                            <a href="{% url 'register' %}"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a>
                         </div>
+                    {% endif %}
+                    
                     </div>
                 </div>
             </div>
@@ -68,10 +80,14 @@
             </div>
             <div class="col-lg-3">
                 <div class="header__cart">
+                    {% if user.is_authenticated %}
                     <ul>
                         <li><a href="{% url 'favourite_list' %}"><i class="fa fa-heart"></i> <span>{{ fav_count }}</span></a></li>
                         <li><a href="{% url 'cart' %}"><i class="fa fa-shopping-bag"></i> <span>{{ item_count }}</span></a></li>
                     </ul>
+                    {% else %}
+                    <li>log in please</li>
+                    {% endif %}
                     
                     <!-- <div class="header__cart__price">item: <span>$150.00</span></div> -->
                 </div>

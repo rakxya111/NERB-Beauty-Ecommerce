@@ -174,65 +174,68 @@
 </script>
 
 <script>
-    $("#register_form").submit(function (e) {
+
+function handleFormSubmission(formSelector, messageContainerSelector, postUrl) {
+    $(formSelector).submit(function (e) {
         e.preventDefault(); // Prevent default form submission
 
-        let serializedData = $(this).serialize(); // Serialize form data
+        let serializedData = $(this).serialize();
 
         $.ajax({
             type: "POST",
-            url: "{% url 'register' %}", 
+            url: postUrl,
             data: serializedData,
             success: function (response) {
-                // Display success message
-                const alert = $(`
+                // Show success message
+                const alert = `
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>${response.message}</strong>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                    </div>
-                `);
-                $("#register_message").html(alert); // Replace any existing feedback
+                    </div>`;
+                $(messageContainerSelector).html(alert);
 
-                // Automatically redirect to the login page after 3 seconds
+                // Redirect to the target page after a short delay
                 setTimeout(function () {
-                    window.location.href = response.redirect_url; // Redirect to login
-                }, 3000);
+                    window.location.href = response.redirect_url;
+                }, 1000);
             },
             error: function (response) {
-                // Display error messages
-                const errors = response.responseJSON.errors;
+                // Handle errors and display them
+                const errors = response.responseJSON?.errors || {};
                 let errorMessages = "";
 
-                // Handle field-specific and non-field errors
                 for (const field in errors) {
                     errors[field].forEach((error) => {
                         errorMessages += `<p>${field === '__all__' ? 'Error' : field}: ${error}</p>`;
                     });
                 }
 
-                const alert = $(`
+                const alert = `
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>${response.responseJSON.message}</strong>
+                        <strong>${response.responseJSON?.message || "An error occurred."}</strong>
                         ${errorMessages}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                    </div>
-                `);
-                $("#register_message").html(alert); // Replace any existing feedback
+                    </div>`;
+                $(messageContainerSelector).html(alert);
 
                 // Automatically remove the alert after 3 seconds
                 setTimeout(function () {
-                    alert.alert('close');
+                    $(messageContainerSelector).empty();
                 }, 3000);
             },
         });
     });
+}
+
+// Apply the handler to both forms
+handleFormSubmission("#register_form", "#register_message", "{% url 'register' %}");
+handleFormSubmission("#register_form1", "#register_message1", "{% url 'login' %}");
+
 </script>
-
-
 
 
 

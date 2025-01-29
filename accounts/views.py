@@ -4,7 +4,8 @@ from .models import Account
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.urls import reverse
-
+from django.contrib import messages,auth
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method == "POST":
@@ -54,9 +55,29 @@ def register(request):
  
 
 
+from django.http import JsonResponse
+
 def login(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = auth.authenticate(email=email, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return JsonResponse({'status': 'success', 'message': 'You are now logged in.',
+                                 'redirect_url': reverse('home') 
+                                 }, status=200)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid login credentials.'}, status=401)
+
     return render(request, 'mainshop/accounts/login.html')
 
+
+@login_required
 def logout(request):
-    pass
+    auth.logout(request)
+    return redirect('home')
+
 

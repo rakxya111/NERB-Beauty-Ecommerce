@@ -14,7 +14,9 @@ class HomeView(ListView):
     model = Product
     template_name = "mainshop/home.html"
     context_object_name = "products"
-    queryset = Product.objects.filter(is_available=True, stock__gte=1).order_by("-created_date")[:12]
+
+    def get_queryset(self):
+        return Product.objects.filter(is_available=True, stock__gte=1).order_by("-created_date")[:12]
 
 
 class FeaturedProductsView(ListView):

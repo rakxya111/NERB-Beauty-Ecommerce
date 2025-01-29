@@ -143,3 +143,9 @@ MESSAGE_TAGS = {
     messages.ERROR: "danger",
     50: "critical",
 }
+
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
+
+

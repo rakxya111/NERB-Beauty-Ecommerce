@@ -1,27 +1,35 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from .models import Product, Cart, CartItem, Favourite
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.http import JsonResponse, Http404
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class AddToCartView(View):
+
+
+class AddToCartView(LoginRequiredMixin, View):
     def get_cart(self, request):
+        if not request.session.session_key:
+            request.session.create()
+        
         try:
-            cart = Cart.objects.get(cart_id=request.session.session_key)
+            # Try to get the cart based on the user
+            cart = Cart.objects.get(user=request.user)
         except Cart.DoesNotExist:
-            cart = Cart.objects.create(cart_id=request.session.session_key)
+            # If no cart for the user, try to get it based on the session
+            try:
+                cart = Cart.objects.get(cart_id=request.session.session_key)
+            except Cart.DoesNotExist:
+                # If no cart for the session, create a new cart
+                cart = Cart.objects.create(cart_id=request.session.session_key, user=request.user)
+        
         return cart
 
     def get_cart_item(self, product, cart):
         try:
             cart_item = CartItem.objects.get(product=product, cart=cart)
             cart_item.quantity += 1
-            
             cart_item.save()
         except CartItem.DoesNotExist:
             cart_item = CartItem.objects.create(
@@ -32,28 +40,26 @@ class AddToCartView(View):
         return cart_item
 
     def post(self, request, product_id):
-        try:
-            product = Product.objects.get(id=product_id)
-        except Product.DoesNotExist:
-            raise Http404("Product does not exist")
-        
+        product = get_object_or_404(Product, id=product_id)
         cart = self.get_cart(request)
         self.get_cart_item(product, cart)
         return redirect('cart')
 
-
-class RemoveFromCartView(View):
+class RemoveFromCartView(LoginRequiredMixin, View):
     def get_cart(self, request):
+        if not request.session.session_key:
+            request.session.create()
+        
         try:
-            return Cart.objects.get(cart_id=request.session.session_key)
+            return Cart.objects.get(user=request.user)
         except Cart.DoesNotExist:
-            return None
+            return Cart.objects.get(cart_id=request.session.session_key)
 
     def post(self, request, product_id):
         cart = self.get_cart(request)
         if not cart:
             return redirect('cart')
-
+        
         product = get_object_or_404(Product, id=product_id)
         cart_item = CartItem.objects.get(product=product, cart=cart)
         
@@ -65,43 +71,50 @@ class RemoveFromCartView(View):
 
         return redirect('cart')
 
-class RemoveCartView(View):
-    def get_cart(self,request):
-        try:
-            return Cart.objects.get(cart_id=request.session.session_key)
-        except Cart.DoesNotExist:
-            return None
+class RemoveCartView(LoginRequiredMixin, View):
+    def get_cart(self, request):
+        if not request.session.session_key:
+            request.session.create()
         
-    def post(self,request,product_id):
+        try:
+            return Cart.objects.get(user=request.user)
+        except Cart.DoesNotExist:
+            return Cart.objects.get(cart_id=request.session.session_key)
+
+    def post(self, request, product_id):
         cart = self.get_cart(request)
         if not cart:
             return redirect('cart')
-        product = get_object_or_404(Product,id=product_id)
-        cart_item = CartItem.objects.get(product=product,cart=cart)
+        
+        product = get_object_or_404(Product, id=product_id)
+        cart_item = CartItem.objects.get(product=product, cart=cart)
         cart_item.delete()
         return redirect('cart')
-    
 
-class CartView(View):
-    def get_cart_id(self, request):
-        # Ensure the session key exists
+class CartView(LoginRequiredMixin, View):
+    def get_cart(self, request):
         if not request.session.session_key:
             request.session.create()
-        return request.session.session_key
+        
+        try:
+            return Cart.objects.get(user=request.user)
+        except Cart.DoesNotExist:
+            return Cart.objects.get(cart_id=request.session.session_key)
 
     def get(self, request, *args, **kwargs):
         total = 0
         quantity = 0
         cart_items = None
+        shipping = 0
+        grand_total = 0
         try:
-            # Get the cart using the session key
-            cart = Cart.objects.get(cart_id=self.get_cart_id(request))
+            cart = self.get_cart(request)
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
             for cart_item in cart_items:
                 total += (cart_item.product.price * cart_item.quantity)
                 quantity += cart_item.quantity
-            shipping = 75
-            grand_total = total + shipping 
+            shipping = 75 if cart_items else 0  # Only add shipping if there are items
+            grand_total = total + shipping
         except ObjectDoesNotExist:
             pass  # Ignore if the cart doesn't exist
 
@@ -109,48 +122,34 @@ class CartView(View):
             'total': total,
             'quantity': quantity,
             'cart_items': cart_items,
-            'shipping' : shipping,
-            'grand_total' : grand_total,  
+            'shipping': shipping,
+            'grand_total': grand_total,
         }
         return render(request, 'mainshop/cart/cart.html', context)
 
 
-class AddFavouriteView(View):
-    def post(self,request,product_id):
-        try:
-            product = Product.objects.get(id=product_id)
-        except Product.DoesNotExist:
-            raise Http404("Product does not exist")
-        
-        fav = Favourite.objects.get_or_create(user=request.user,product=product)
-        created = fav[1]
-
+class AddFavouriteView(LoginRequiredMixin, View):
+    def post(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        fav, created = Favourite.objects.get_or_create(user=request.user, product=product)
         if created:
-            messages.success(request,"Product added to favourite")
+            messages.success(request, "Product added to favourite")
+        else:
+            messages.info(request, "Product is already in your favourites")
         
         return redirect('favourite_list')
 
-class RemoveFromFavView(View):
-    def post(self,request,product_id):
-        product = get_object_or_404(Product,id=product_id)
-        favourite = Favourite.objects.filter(user=request.user,product=product)
-        favourite.delete()
-        messages.success(request,"Product removed from favourite")
+class RemoveFromFavView(LoginRequiredMixin, View):
+    def post(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        Favourite.objects.filter(user=request.user, product=product).delete()
+        messages.success(request, "Product removed from favourite")
         return redirect('favourite_list')
 
-class FavouriteView(View):
-    def get(self,request):
+class FavouriteView(LoginRequiredMixin, View):
+    def get(self, request):
         favourites = Favourite.objects.filter(user=request.user)
         context = {
-            'favourites':favourites
+            'favourites': favourites,
         }
-        return render(request,'mainshop/favourite/favourite.html',context)
-
-
-
-
-
-
-
-
-
+        return render(request, 'mainshop/favourite/favourite.html', context)
