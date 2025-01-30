@@ -68,8 +68,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "mainshop.nav.navigation",
-                "cart.nav.counter",
+            
                 "cart.nav.favourite_counter",
+                'cart.context_processors.cart_item_count',
               
             ],
         },
@@ -79,6 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ECOMMERCE.wsgi.application'
 
 AUTH_USER_MODEL = 'accounts.Account'
+
 
 
 # Database
@@ -127,7 +129,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = ['static']
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -144,8 +147,13 @@ MESSAGE_TAGS = {
     50: "critical",
 }
 
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'login'
+
+
+
+
+
 
 

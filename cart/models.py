@@ -1,7 +1,7 @@
 from django.db import models
 from mainshop.models import Product
 from django.conf import settings
-
+from django.utils import timezone
 
 
 class Cart(models.Model):
@@ -36,3 +36,17 @@ class Favourite(models.Model):
         return f"{self.user.username} - {self.product.product_name}"
 
 
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    discount = models.DecimalField(max_digits=10, decimal_places=2)  # Discount amount
+    is_percentage = models.BooleanField(default=False)  # If True, treat as percentage
+    min_order_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Optional minimum order value
+    is_active = models.BooleanField(default=True)
+    expiry_date = models.DateTimeField(null=True, blank=True)
+
+    def is_valid(self):
+        """Check if coupon is valid"""
+        return self.is_active and (not self.expiry_date or self.expiry_date > timezone.now())
+
+    def __str__(self):
+        return self.code

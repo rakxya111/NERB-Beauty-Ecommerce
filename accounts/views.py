@@ -53,10 +53,6 @@ def register(request):
         return render(request, 'mainshop/accounts/register.html', context)
 
  
-
-
-from django.http import JsonResponse
-
 def login(request):
     if request.method == "POST":
         email = request.POST.get('email')
@@ -75,9 +71,8 @@ def login(request):
     return render(request, 'mainshop/accounts/login.html')
 
 
-@login_required
 def logout(request):
     auth.logout(request)
-    return redirect('home')
+    return redirect('home')  
 
 

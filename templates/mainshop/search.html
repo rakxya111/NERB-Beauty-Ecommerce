@@ -1,22 +1,22 @@
 <div  style="margin-left: 450px; margin-bottom: -10px; margin-right: 200px;">
-<div class="hero__search">
-    <div class="hero__search__form">
-        <form action="{% url 'product-search' %}" method="get" style="background-color: #734f96; ">
-            <div class="hero__search__categories" style="color: white;" >
-                SEARCH ANYTHING
+    <div class="hero__search">
+        <div class="hero__search__form">
+            <form action="{% url 'product-search' %}" method="get" style="background-color: #734f96; ">
+                <div class="hero__search__categories" style="color: white;" >
+                    SEARCH ANYTHING
+                </div>
+                <input type="text" name="query" value="{{ query }}" placeholder="What do yo u need?">
+                <button type="submit" class="site-btn"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form>
+        </div>
+        <div class="hero__search__phone">
+            <div class="hero__search__phone__icon">
+               <a href="{% url 'contact' %}"> <i class="fa fa-phone"></i></a>
             </div>
-            <input type="text" name="query" value="{{ query }}" placeholder="What do yo u need?">
-            <button type="submit" class="site-btn"><i class="fa fa-search" aria-hidden="true"></i></button>
-        </form>
-    </div>
-    <div class="hero__search__phone">
-        <div class="hero__search__phone__icon">
-            <i class="fa fa-phone"></i>
-        </div>
-        <div class="hero__search__phone__text">
-            <h5>+ 01 661720399 </h5>
-            <span>support 24/7 time</span>
+            <div class="hero__search__phone__text">
+                <h5>+ 01 661720399 </h5>
+                <span>support 24/7 time</span>
+            </div>
         </div>
     </div>
-</div>
-</div>
+    </div>
