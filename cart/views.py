@@ -128,9 +128,12 @@ class CartView(View):
         cart_items = None
         shipping = 0
         grand_total = 0
+<<<<<<< HEAD
         coupon_code = request.session.get('coupon_code', None)
         applied_coupon = None
         discount_amount = 0
+=======
+>>>>>>> 52003162c8594039b5c149c7fe06bdc97ac34e94
 
         cart = self.get_cart(request)
         if cart:
@@ -140,6 +143,7 @@ class CartView(View):
                 quantity += cart_item.quantity
             shipping = 75 if cart_items else 0
             grand_total = total + shipping
+<<<<<<< HEAD
 
          # Apply coupon discount if valid
             if coupon_code:
@@ -156,6 +160,8 @@ class CartView(View):
                         request.session.pop('coupon_code', None)  # Remove invalid coupon
                 except Coupon.DoesNotExist:
                     request.session.pop('coupon_code', None)
+=======
+>>>>>>> 52003162c8594039b5c149c7fe06bdc97ac34e94
 
         context = {
             'total': total,
@@ -182,8 +188,11 @@ class CartView(View):
             except Coupon.DoesNotExist:
                 messages.error(request, "Invalid coupon code.")
 
+<<<<<<< HEAD
         return redirect('cart')  # Redirect to cart view
 
+=======
+>>>>>>> 52003162c8594039b5c149c7fe06bdc97ac34e94
 
 
 @method_decorator(login_required, name='dispatch')
@@ -222,6 +231,7 @@ class FavouriteView(View):
         return render(request, 'mainshop/favourite/favourite.html', context)
 
 
+<<<<<<< HEAD
 
 @method_decorator(login_required, name='dispatch')
 class CheckoutView(View):
@@ -281,3 +291,5 @@ class CheckoutView(View):
 
 
 
+=======
+>>>>>>> 52003162c8594039b5c149c7fe06bdc97ac34e94
