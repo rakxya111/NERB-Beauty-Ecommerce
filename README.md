@@ -54,7 +54,7 @@ Payment integration
 Since the `media/` folder is not included in this repository (to prevent large file storage in Git), you need to manually download and extract it.
 
 ### Steps:
-1. Download the media files from [this link]((https://drive.google.com/file/d/1YJMQptrTiNo-M-GrD1Xb5ft8zv6JMnmi/view?usp=drive_link)).
+1. Download the media files from [this link](https://drive.google.com/file/d/1YJMQptrTiNo-M-GrD1Xb5ft8zv6JMnmi/view?usp=drive_link).
 2. Extract the `media_files.zip` file.
 3. Move the extracted `media/` folder to the root directory of the project (where `manage.py` is located).
 4. Run the Django project as usual:
