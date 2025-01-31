@@ -71,13 +71,14 @@ def login(request):
     return render(request, 'mainshop/accounts/login.html')
 
 
+
+
+
+
 def logout(request):
     auth.logout(request)
-<<<<<<< HEAD
     return redirect('home')  
-=======
-    return redirect('home')  # Redirect to a public page instead of rendering login.html
 
->>>>>>> 52003162c8594039b5c149c7fe06bdc97ac34e94
+
 
 
