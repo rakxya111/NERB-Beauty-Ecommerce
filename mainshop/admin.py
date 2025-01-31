@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Brand, Product, ProductImage,Newsletter,Contact
+from .models import Category, Brand, Product, ProductImage,Newsletter,Contact,ReviewRating
 from django_summernote.admin import SummernoteModelAdmin  # Keep this only if needed for Product
 
 
@@ -32,3 +32,4 @@ admin.site.register(Brand, BrandAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Newsletter)
 admin.site.register(Contact)
+admin.site.register(ReviewRating)

@@ -916,8 +916,8 @@ ol {
 
 .featured__item__pic:hover {
     transform: scale(1.05); /* Slight zoom-in effect */
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow on hover */
-    border-color: pink; /* Change border color to pink on hover */
+    box-shadow: 0 8px 12px rgba(80, 76, 76, 0.2); /* More prominent shadow on hover */
+    border-color: #b7abc2; /* Change border color to pink on hover */
 }
 
 
@@ -2225,7 +2225,7 @@ ol {
 .checkout__input input {
 	width: 100%;
 	height: 46px;
-	border: 1px solid #ebebeb;
+	border: 1px solid #685757;
 	padding-left: 20px;
 	font-size: 16px;
 	color: #b2b2b2;
@@ -2237,7 +2237,7 @@ ol {
 }
 
 .checkout__input input::placeholder {
-	color: #b2b2b2;
+	color: #433e3e;
 }
 
 .checkout__input__checkbox {

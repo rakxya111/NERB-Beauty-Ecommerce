@@ -71,13 +71,13 @@ def login(request):
     return render(request, 'mainshop/accounts/login.html')
 
 
-
-
-
-
 def logout(request):
     auth.logout(request)
     return redirect('home')  
+
+@login_required
+def dashboard(request):
+    return render(request,"mainshop/accounts/dashboard.html")
 
 
 

@@ -30,15 +30,23 @@
                         </div> -->
                       
                         {% if user.is_authenticated %}
-                      <div class="header__top__right__auth">
                         <small>Welcome, {{ user.first_name }}!</small>
-                        <form action="{% url 'logout' %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" style=" outline: none; border: none; background-color: transparent;">
-                       <i class="fa fa-user-plus" aria-hidden="true">logout</i> 
-                    </button>
-                </form>
-                    </div>
+                        <div class="header__top__right__auth" style=" margin-left: 400px; display: flex; align-items: right; gap: 10px;">
+                            
+                            <!-- Dashboard Link -->
+                            <a href="{% url 'dashboard' %}" style="text-decoration: none;">Dashboard |</a>
+                        
+                            <!-- Logout Form -->
+                            <form action="{% url 'logout' %}" method="post" style="margin: 0; display: flex; align-items: center;">
+                                {% csrf_token %}
+                                <button type="submit" style="outline: none; border: none; background: none; cursor: pointer; padding: 0; display: flex; align-items: center;">
+                                    <i class="fa fa-user-plus" aria-hidden="true">Logout</i> 
+                                </button>
+                            </form>
+                        </div>
+                        
+
+                   
                     {% else %}
 
                         <div class="header__top__right__auth">
@@ -57,14 +65,14 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid" style="padding-left: 100px; padding-right: 100px;">
+    <div class="container-fluid" >
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-2">
                 <div class="header__logo">
                     <a href="/"><img src="{% static 'mainshop/assets/img/logo13.png' %}" alt=""></a> 
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-8">
                 <nav class="header__menu">
                     <ul>
                         <li class="active"><a href="/">Home</a></li>
@@ -78,23 +86,29 @@
                                 <li><a href="./blog-details.html">Blog </a></li>
                             </ul>
                         </li>
+
+                        <li><a href="#">Categories</a>
+                            <ul class="header__menu__dropdown">
+                                {% for category in categories %}
+                               
+                                <li><a href="{% url 'product-by-category' category.id %}">{{ category.cat_name|title }} </a></li>
+                               
+                                {% endfor %}
+                            </ul>
+                        </li>
                         
                         <li><a href="{% url 'contact' %}">Contact</a></li>
                     </ul>
                 </nav>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-1">
                 <div class="header__cart">
                    
                     <ul>
                         <li><a href="{% url 'favourite_list' %}"><i class="fa fa-heart"></i> <span>{{ fav_count }}</span></a></li>
                         <li><a href="{% url 'cart' %}"><i class="fa fa-shopping-bag"></i> <span>{{item_count }}</span></a></li>
                     </ul>
-                   
-               
-                      
-                    <!-- <div class="header__cart__price">item: <span>$150.00</span></div> -->
-                </div>
+                   </div>
             </div>
         </div>
         <div class="humberger__open">

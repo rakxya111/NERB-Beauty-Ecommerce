@@ -56,17 +56,17 @@
                 </td>
                 <td class="shoping__cart__quantity">
                     <div class="quantity" style="background-color: white; width: 50px; margin-left: 14px;">
-                        <form method="POST" action="{% url 'remove_cart' item.product.id %}" class="btn btn-light" style="width:40px; height:30; margin-top: 13px;">
-                            {% csrf_token %}
-                            <button type="submit" style="border: none; margin-left: -5px;">
-                                <i class="fa fa-minus"></i>
-                            </button>
-                        </form>
-                        <input type="text" value="{{ item.quantity }}" class="btn btn-light" style="width: 50px; height: auto; text-align: center; margin-top: 11px;" readonly>
                         <form method="POST" action="{% url 'add_to_cart' item.product.id %}" class="btn btn-light" style="width:40px; height:30; margin-top: 13px;">
                             {% csrf_token %}
                             <button type="submit" style="border: none; margin-left: -5px;">
                                 <i class="fa fa-plus"></i>
+                            </button>
+                        </form>
+                        <input type="text" value="{{ item.quantity }}" class="btn btn-light" style="width: 50px; height: auto; text-align: center; margin-top: 11px;" readonly>
+                        <form method="POST" action="{% url 'remove_cart' item.product.id %}" class="btn btn-light" style="width:40px; height:30; margin-top: 13px;">
+                            {% csrf_token %}
+                            <button type="submit" style="border: none; margin-left: -5px;">
+                                <i class="fa fa-minus"></i>
                             </button>
                         </form>
                     </div>
