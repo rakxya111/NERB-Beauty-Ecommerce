@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ogani Template">
+    <meta name="keywords" content="Ogani, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title> N-ERB Beauty </title>
+    <link rel="icon" type="image/x-icon" href="{% static 'mainshop/assets/img/favicon.ico' %}">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/bootstrap1.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/font-awesome.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/elegant-icons.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/nice-select.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/jquery-ui.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/owl.carousel.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/slicknav.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'mainshop/assets/css/custom.css' %}" type="text/css">
+
+</head>
+
+<body>
+
+
+{% include "mainshop/header2.html" %} <!-- Header2 top -->
+{% include "mainshop/header.html" %} <!-- Header bottom -->
+
+{% block content %}
+{% endblock content %}
+
+{% include "mainshop/footer.html" %} <!-- Footer Section -->
+
+    
+
+<!-- Js Plugins -->
+<!-- <script src="{% static 'mainshop/assets/js/jquery-3.3.1.min.js' %}"></script> -->
+<script src="{% static 'mainshop/assets/js/jquery-3.6.0.min.js' %}"></script> 
+<script src="{% static 'mainshop/assets/js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'mainshop/assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'mainshop/assets/js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'mainshop/assets/js/jquery.slicknav.js' %}"></script>
+<script src="{% static 'mainshop/assets/js/mixitup.min.js' %}"></script>
+<script src="{% static 'mainshop/assets/js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'mainshop/assets/js/main.js' %}"></script>
+<script>
+    $("#newsletter_side_form").submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        let serializedData = $(this).serialize(); // Serialize form data
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'newsletter' %}", // Django URL for newsletter
+            data: serializedData,
+            success: function (response) {
+                const alert = $(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>${response.message}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+                $("#newsletter_side_message").append(alert); // Append success message
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.remove();
+                }, 5000);
+
+                // Clear the email input field
+                $("#newsletter_side_form input[type='email']").val('');
+            },
+            error: function(response) {
+            const alert = $(`
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>${response.responseJSON.message}</strong> 
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            `);
+            $("#newsletter_side_message").append(alert);
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.remove();
+                }, 5000);
+
+            // Clear the email input field after 3 seconds
+            setTimeout(function() {
+                $("#newsletter_side_form input[type='email']").val('');
+            }, 3000);
+        }
+
+        });
+    });
+</script>
+
+<script>
+    $("#contactForm").submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        let serializedData = $(this).serialize(); // Serialize form data
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'contact' %}", // Django URL for contact view
+            data: serializedData,
+            success: function (response) {
+                // Append success message
+                const alert = $(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>${response.message}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+                $("#formFeedback").html(alert); // Replace any existing feedback
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.alert('close');
+                }, 3000);
+
+                // Clear form fields
+                $("#contactForm")[0].reset();
+            },
+            error: function (response) {
+                // Append error message
+                const alert = $(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>${response.responseJSON.message}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+                $("#formFeedback").html(alert); // Replace any existing feedback
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.alert('close');
+                }, 3000);
+            },
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const currentPath = window.location.pathname;
+    const menuItems = document.querySelectorAll(".header__menu ul li a");
+
+    menuItems.forEach((item) => {
+        if (item.getAttribute("href") === currentPath) {
+            item.parentElement.classList.add("active");
+        } else {
+            item.parentElement.classList.remove("active");
+        }
+    });
+});
+
+</script>
+
+ <script>
+
+function handleFormSubmission(formSelector, messageContainerSelector, postUrl) {
+    $(formSelector).submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        let serializedData = $(this).serialize();
+
+        $.ajax({
+            type: "POST",
+            url: postUrl,
+            data: serializedData,
+            success: function (response) {
+                // Show success message
+                const alert = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>${response.message}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>`;
+                $(messageContainerSelector).html(alert);
+
+                // Redirect to the target page after a short delay
+                setTimeout(function () {
+                    window.location.href = response.redirect_url;
+                }, 1000);
+            },
+            error: function (response) {
+                // Handle errors and display them
+                const errors = response.responseJSON?.errors || {};
+                let errorMessages = "";
+
+                for (const field in errors) {
+                    errors[field].forEach((error) => {
+                        errorMessages += `<p>${field === '__all__' ? 'Error' : field}: ${error}</p>`;
+                    });
+                }
+
+                const alert = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>${response.responseJSON?.message || "An error occurred."}</strong>
+                        ${errorMessages}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>`;
+                $(messageContainerSelector).html(alert);
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    $(messageContainerSelector).empty();
+                }, 3000);
+            },
+        });
+    });
+}
+
+// Apply the handler to both forms
+handleFormSubmission("#register_form", "#register_message", "{% url 'register' %}");
+handleFormSubmission("#register_form1", "#register_message1", "{% url 'login' %}");
+
+</script> 
+
+
+
+    
+</body>
+</html>
