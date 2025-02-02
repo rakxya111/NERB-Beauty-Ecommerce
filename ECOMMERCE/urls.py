@@ -25,6 +25,7 @@ urlpatterns = [
     path("accounts/",include("accounts.urls")),
     path("",include("mainshop.urls")),
     path("cart/",include("cart.urls")),
+    path("orders/",include("orders.urls")),
     path('summernote/', include('django_summernote.urls')),
     path("accounts/logout/",views.LogoutView.as_view(), name="logout"),
 ]

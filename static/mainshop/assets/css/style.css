@@ -3575,3 +3575,12 @@ a{
 	text-decoration: none;
 	color: #000;
 }
+a:hover{
+	text-decoration: none;
+	color: #4c3660;
+}
+a:active{
+	text-decoration: none;
+	color: #4c3660;
+
+}

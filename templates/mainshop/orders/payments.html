@@ -1,0 +1,112 @@
+{% extends "mainshop/base.html" %}
+{% load static %}
+{% block content %}
+
+{% include "mainshop/cart/cartBanner.html" %}
+
+<!-- Shoping Cart Section Begin -->
+<section class="shoping-cart spad">
+    
+    <div class="container">
+    <div class="row">
+    <!-- Products List -->
+    <div class="col-lg-8">
+    <div class="shoping__cart__table">
+        <div class="card">
+            <div class="card-header">
+             <b>Billing Address</b> 
+            </div>
+            <div class="card-body">
+        
+        <p class="card-text mb-0">{{ order.full_name }} </p>
+        <p class="card-text mb-0">{{ order.full_address }}</p>
+        <p class="card-text mb-0">{{ order.city }}</p>
+        <p class="card-text mb-0">{{ order.country }}</p>
+        <p class="card-text mb-0">{{ order.email }}</p>
+        <p class="card-text mb-0">{{ order.phone }}</p>
+        {% if order.order_note %}
+        <b>Order Note : </b>{{ order.order_note }}
+        {% endif %}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+             <b>Payment Method</b> 
+            </div>
+            <div class="card-body">
+             
+              <p class="card-text">PayPal</p>
+              
+            </div>
+          </div>
+
+          
+          <div class="card">
+            <div class="card-header">
+              <b>Review Products</b>
+            </div>
+            <div class="card-body">
+             
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="shoping__product">Products</th>
+
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td class="shoping__cart__item">
+                                <img src="{{ item.product.images.first.image.url }}" alt="" style="height: 100px; width: auto;">
+                                <a href="{% url 'product-detail' item.product.id %}">
+                                    <h5>{{ item.product.product_name|truncatewords:3 }}</h5>
+                                </a>
+                            </td>
+
+                            <td class="shoping__cart__price">
+                                Rs {{ item.product.sale_price }}
+                            </td>
+                            <td class="shoping__cart__quantity">
+                            {{ item.quantity }}
+                            </td>
+                            <td class="shoping__cart__total" style="width: 150px;">
+                                Rs {{ item.sub_total }}
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+              
+            </div>
+          </div>
+    </div>
+    </div>
+    
+        <!-- Cart Total Section -->
+        <div class="col-lg-4">
+            <div class="shoping__checkout">
+                <h5>Cart Total</h5>
+                <ul>
+                    <li>Subtotal <span>Rs {{ total }}</span></li>
+                    <li>Shipping Fee <span>Rs {{ shipping }}</span></li>
+
+                    <li>Discount Amount <span>Rs {{ discount_amount }}</span></li>
+                    <li>Grand Total <span>Rs {{ grand_total }}</span></li>
+                </ul>
+                <a href="#" class="primary-btn">MAKE PAYMENT</a>
+    
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </section>
+
+{% endblock %}

@@ -9,7 +9,8 @@
  
             <div class="checkout__form">
                 <h4>Billing Details</h4>
-                <form action="#" method="post">
+                
+                <form action="{% url 'place_order' %}" method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-lg-8 col-md-6">
@@ -18,6 +19,7 @@
                                     <div class="checkout__input">
                                         <p>First Name<span>*</span></p>
                                         <input type="text" name="first_name" class="form-control" required>
+                                        
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -30,18 +32,18 @@
                         
                             <div class="checkout__input">
                                 <p>Address<span>*</span></p>
-                                <input type="text" placeholder="Street Address 1" class="checkout__input__add" name="addess_line1" class="form-control" required>
-                                <input type="text" placeholder="Street Address 2" name="address_line2" class="form-control">
+                                <input type="text" placeholder="Street Address 1" class="checkout__input__add" name="address_line_1" class="form-control" required>
+                                <input type="text" placeholder="Street Address 2" name="address_line_2" class="form-control">
                             </div>
                             
                             <div class="checkout__input">
-                                <p>Town/City<span>*</span></p>
+                                <p>City<span>*</span></p>
                                 <input type="text" name="city" class="form-control" required>
                             </div>
                           
                             <div class="checkout__input">
-                                <p>Country/State<span>*</span></p>
-                                <input type="text" name="state" class="form-control" required>
+                                <p>Country<span>*</span></p>
+                                <input type="text" name="country" class="form-control" required>
                             </div>
 
                             <div class="row">

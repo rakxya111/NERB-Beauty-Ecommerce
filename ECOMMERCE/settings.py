@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'mainshop',
     'accounts',
     'cart',
+    'orders',
     'django_summernote',
 ]
 
