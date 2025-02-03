@@ -4,7 +4,6 @@ from cart.models import  Coupon,CartItem
 from orders.forms import OrderForm
 import datetime
 from django.contrib import messages
-
 from orders.models import Order
 
 
