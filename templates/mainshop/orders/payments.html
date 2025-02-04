@@ -56,7 +56,7 @@
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
-                            <th></th>
+                            <th>Review</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,7 +65,7 @@
                             <td class="shoping__cart__item">
                                 <img src="{{ item.product.images.first.image.url }}" alt="" style="height: 100px; width: auto;">
                                 <a href="{% url 'product-detail' item.product.id %}">
-                                    <h5>{{ item.product.product_name|truncatewords:3 }}</h5>
+                                    <h5>{{ item.product.product_name|truncatewords:1 }}</h5>
                                 </a>
                             </td>
 
@@ -77,6 +77,13 @@
                             </td>
                             <td class="shoping__cart__total" style="width: 150px;">
                                 Rs {{ item.sub_total }}
+                            </td>
+
+                            <td class="shoping__cart__quantity">
+                                
+                                <a href="{% url 'product-detail' item.product.id %}">
+                                    <h5 style="color: red;"> Review </h5>
+                                </a>
                             </td>
 
                         </tr>

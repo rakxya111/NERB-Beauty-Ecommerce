@@ -291,3 +291,5 @@ class FlashSaleView(ListView):
         return context
     
 
+class AboutView(TemplateView):
+    template_name = "mainshop/about.html"

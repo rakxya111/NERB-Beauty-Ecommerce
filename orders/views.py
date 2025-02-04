@@ -40,7 +40,7 @@ def place_order(request, total=0, quantity=0):
             coupon = Coupon.objects.get(code=coupon_code, is_active=True)
             
             # Check coupon validity
-            if coupon.expiry_date and coupon.expiry_date < datetime.date.today():
+            if coupon.expiry_date and coupon.expiry_date.date() < datetime.date.today():
                 messages.error(request, "Coupon has expired.")
                 request.session.pop('coupon_code', None)  # Remove expired coupon
             elif total < coupon.min_order_value:

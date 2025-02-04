@@ -78,14 +78,6 @@
                         <li class="active"><a href="/">Home</a></li>
                         <li><a href="{% url 'product-list' %}">Shop</a></li>
                         <li><a href="{% url 'flash-sale' %}">Flash Sale</a></li>
-                       
-                        <li><a href="#">Pages</a>
-                            <ul class="header__menu__dropdown">
-                                <li><a href="./shoping-cart.html">About</a></li>
-                                <li><a href="./checkout.html">Orders</a></li>
-                                <li><a href="./blog-details.html">Blog </a></li>
-                            </ul>
-                        </li>
 
                         <li><a href="#">Categories</a>
                             <ul class="header__menu__dropdown">
@@ -96,6 +88,16 @@
                                 {% endfor %}
                             </ul>
                         </li>
+                       
+                        <li><a href="{% url 'about' %}">About</a>
+                            <!-- <ul class="header__menu__dropdown">
+                                <li><a href="./shoping-cart.html">About</a></li>
+                                <li><a href="./checkout.html">Orders</a></li>
+                                <li><a href="./blog-details.html">Blog </a></li>
+                            </ul> -->
+                        </li>
+
+                    
                         
                         <li><a href="{% url 'contact' %}">Contact</a></li>
                     </ul>
