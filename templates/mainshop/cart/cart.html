@@ -2,26 +2,19 @@
 {% load static %}
 {% block content %}
 
-{% include "mainshop/cart/cartBanner.html" %}
+
 
 {% if not cart_items %}
 
-<section class="shoping-cart spad" style="background-image: url('{% static "mainshop/assets/img/MAIN112.png" %}');  background-size: cover;">
-<a href="{% url 'product-list' %}" class=" primary-btn cart-btn cart-btn-right " style = "background-color: green; color: white; margin-top: -40px; margin-right:10px;"> <span class="icon_loading"></span>
+<section class="shoping-cart spad" style="background-image: url('{% static "mainshop/assets/img/emptycart.png" %}');  background-size: cover;">
+<a href="{% url 'product-list' %}" class=" primary-btn cart-btn cart-btn-right " style = "background-color: green; color: white; margin-top: -40px; margin-right:50px;"> <span class="icon_loading"></span>
         CONTINUE SHOPPING</a>
-    <div class="container" style="margin-top: 300px; margin-bottom: 300px;">
-        <div class="row">
-            
-            <div class="col-lg-12">
-            
-<h2>The Cart is Empty.......🥹🥹🥹</h2>
 
-</div>
-</div>
-</div>
 </section>
 
 {% else %}
+
+{% include "mainshop/cart/checkoutBanner.html" %}
 
 <!-- Shoping Cart Section Begin -->
 <section class="shoping-cart spad">
@@ -121,7 +114,7 @@
 
 <!-- Continue Shopping Button -->
 <div class="row mt-4">
-    <div class="col-lg-6">
+    <div class="col-lg-12">
         <div class="shoping__cart__btns">
             <a href="{% url 'product-list' %}" class="primary-btn cart-btn cart-btn-right" style="background-color: green; color: white;">
                 <span class="icon_loading"></span> CONTINUE SHOPPING

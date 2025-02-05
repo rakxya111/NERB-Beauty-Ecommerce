@@ -9,6 +9,7 @@ from django.db.models import Q
 from mainshop.forms import Newsletterform,ContactForm
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from cart.models import CartItem,Favourite
 
 class HomeView(ListView):
     model = Product
@@ -176,6 +177,19 @@ class ProductDetailView(DetailView):
         product = self.get_object()
         related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
         context['related_products'] = related_products
+
+        if self.request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(cart__user=self.request.user).values_list('product_id',flat=True)
+            fav_items = Favourite.objects.filter(user=self.request.user).values_list('product_id',flat=True)
+
+            context['cart_items'] = cart_items
+            context['fav_items'] = fav_items
+
+
+        else:
+            context['cart_items'] =  set()
+            context['fav_items'] =  set()
+
         return context
 
 class ProductSearchView(View):

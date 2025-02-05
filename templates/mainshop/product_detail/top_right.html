@@ -1,5 +1,6 @@
 <div class="col-lg-6 col-md-6">
     {% if product.is_sale %}
+    
     <div class="badge text-light position-absolute" style=" margin-top: -40px; width: 100px; background-color: red; height: 30px; font-size:large;"> On Sale </div>
    
     <div class="product__details__text">
@@ -17,6 +18,7 @@
         </div>
         
         <div class="product__details__price">Rs. {{ product.sale_price }} &nbsp; <strike> Rs{{ product.price }}</strike></div>
+       
         {% else %}
        
      <div class="product__details__text">
@@ -36,37 +38,40 @@
 
         <p >{{ product.description| striptags |truncatewords:50 }}</p>
         
-        <!-- <div class="product__details__quantity">
-            <div class="quantity">
-                <div class="pro-qty">
-                    <input type="text" value="1" class="btn btn-light" data-product-id="{{ item.product.id }}">      
-                    
-                </div>
-            </div>
-        </div> -->
+
         
         {% if product.stock <= 0 %}
+        
         <button class="primary-btn" style="border: none; cursor: not-allowed; opacity: 0.6; margin-top: 40px; background-color: red;">
             Out of Stock
         </button>
        
-        {% else %}
+        {% elif product.id in cart_items %}
        
+       <button class="primary-btn" style="border: none; margin-left: -10px; background-color: red;" disabled >Added to Cart</button>
         
+        {% elif product.id not in cart_items %}
+
         <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px;">
             {% csrf_token %}
             <button type="submit" class="primary-btn" style="border: none;">
                 ADD TO CART
             </button>
         </form>
+      
+       
         {% endif %}
         
+        {% if product.id in fav_items %}
+        <button class="primary-btn" style="border: none; background-color: gray;" disabled>Added to Favourites</button>
+        {% else %}
         <form method="POST" action="{% url 'add_favourites' product.id %}" style="width: 500px; margin-top: -57px; margin-left: 180px; ">
             {% csrf_token %}
             <button type="submit" class="primary-btn" style="border: none;  background-color: palevioletred;">
-                ADD TO FAVOURITE
+                ADD TO FAVOURITES
             </button>
         </form>
+        {% endif %}
 
        
         <ul>
