@@ -52,7 +52,7 @@
         
         {% elif product.id not in cart_items %}
 
-        <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width: 500px;">
+        <form method="POST" action="{% url 'add_to_cart' product.id %}" style="width:500px;">
             {% csrf_token %}
             <button type="submit" class="primary-btn" style="border: none;">
                 ADD TO CART
@@ -63,7 +63,10 @@
         {% endif %}
         
         {% if product.id in fav_items %}
-        <button class="primary-btn" style="border: none; background-color: gray;" disabled>Added to Favourites</button>
+        <div style="width: 300px; margin-top: -57px; margin-left: 180px; ">
+            <button class="primary-btn" style="border: none; background-color: gray;" disabled>Added to Favourites</button>
+        </div>
+        
         {% else %}
         <form method="POST" action="{% url 'add_favourites' product.id %}" style="width: 500px; margin-top: -57px; margin-left: 180px; ">
             {% csrf_token %}
