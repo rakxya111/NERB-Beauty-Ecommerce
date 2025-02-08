@@ -242,7 +242,56 @@ handleFormSubmission("#register_form1", "#register_message1", "{% url 'login' %}
 
 </script> 
 
+<script>
+    $("#payment_message").submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
 
+        let serializedData = $(this).serialize(); // Serialize form data
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'place_order' %}", 
+            data: serializedData,
+            success: function (response) {
+                // Append success message
+                const alert = $(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>${response.message}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+                $("#formFeedback").html(alert); // Replace any existing feedback
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.alert('close');
+                }, 3000);
+
+                // Clear form fields
+                $("#contactForm")[0].reset();
+            },
+            error: function (response) {
+                // Append error message
+                const alert = $(`
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>${response.responseJSON.message}</strong>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+                $("#formFeedback").html(alert); // Replace any existing feedback
+
+                // Automatically remove the alert after 3 seconds
+                setTimeout(function () {
+                    alert.alert('close');
+                }, 3000);
+            },
+        });
+    });
+</script>
 
     
 </body>
