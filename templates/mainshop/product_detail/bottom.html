@@ -1,3 +1,4 @@
+{% load static %}
 <div class="col-lg-12">
     <div class="product__details__tab">
         <ul class="nav nav-tabs" role="tablist">
@@ -11,7 +12,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
-                    aria-selected="false">Reviews <span>(1)</span></a>
+                    aria-selected="false">Reviews <span>({{ product.reviewrating_set.count }})</span></a>
             </li>
         </ul>
         <div class="tab-content">
@@ -29,8 +30,8 @@
             </div>
             <div class="tab-pane" id="tabs-3" role="tabpanel">
                 <div class="product__details__tab__desc">
-                    <h4> Write Reviews ✍️</h4> <br>
-               <form action="" method="post">
+                    <h3 style="font-family: fantasy; "> Write a Review ✍️</h3> <br>
+               <form action="{% url 'submit_review' product.id %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 
                 <!-- rating  starts-->
@@ -49,19 +50,113 @@
                  </div><br>
                  
 
-        <label for="subject"> Review Title :</label>
-        <input type="text" name="subject" class="form-control" style="width: 1000px;"><br>Review :
-        <br>
+       
             
         
         <textarea name="review" rows="4" style="width: 1000px;"></textarea><br>
+        <label for="image">Upload Image:</label>
+        <input type="file" name="user_image" accept="image/*"><br><br>
        
         
             <input type="submit" value="Submit Review" class="btn btn-primary">
     
     </form>
-               <br>
+    <br></div> 
+<hr>
+
+<div class="tab-content">
+<div class="col-md-9">
+    <header class="section-heading">
+    <h3 style="font-family: fantasy; "> Customer Reviews ({{ product.reviewrating_set.count }}) </h3> 
+    <br>
+    <span class="rating-star11">
+    <h3>{{ product.averageReview }}</h3>
+    <i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5  and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+    <i class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5  and product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+    <i class="fa fa-star{% if product.averageReview < 2.5 %}-o{% elif product.averageReview >= 2.5  and product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+    <i class="fa fa-star{% if product.averageReview < 3.5 %}-o{% elif product.averageReview >= 3.5  and product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+    <i class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5  and product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+    <span>{{ product.reviewrating_set.count }} reviews</span>
+
+    </span>
+
+            </header>
+            <br><hr>
+            {% for review in product.reviewrating_set.all %}
+            <article class="box mb-3">
+                <div class="icontext w-100 d-flex align-items-center">
+                    <!-- Profile Image -->
+                    <img src="{% static 'mainshop/assets/img/profile.jpg' %}" class="img-xs icon rounded-circle" style="width: 50px; margin-right: 10px;">
+                    <!-- Username and Date -->
+                    <div class="text">
+                        <h6 class="mb-1">{{ review.user.first_name }} {{ review.user.last_name }}</h6>
+                        <span class="date text-muted float-md-right">{{ review.created_at }}</span>  
+                    </div>
+                </div> 
+                <div class="mt-2 rating-star">
+                    <span>
+                <i class="fa fa-star{% if product.averageReview == 0.5 %}-half-o{% elif product.averageReview < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                <i class="fa fa-star{% if product.averageReview == 1.5 %}-half-o{% elif product.averageReview < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                <i class="fa fa-star{% if product.averageReview == 2.5 %}-half-o{% elif product.averageReview < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                <i class="fa fa-star{% if product.averageReview == 3.5 %}-half-o{% elif product.averageReview < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                <i class="fa fa-star{% if product.averageReview == 4.5 %}-half-o{% elif product.averageReview < 5 %}-o {% endif %}" aria-hidden="true"></i></span>
                 </div>
+                
+                <div class="mt-3">
+                    <p>{{ review.review }}</p>  
+                </div>
+                {% if review.user_image %}
+                <div class="mt-3">
+                    <img src="{{ review.user_image.url }}" alt="{{ review.user.username }}" width="200px">
+                </div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div> 
+    </div>
+    
+
+    <!-- <div class="comments-area">
+        <h4>{{ product.reviewrating_set.count }} Reviews</h4>
+       {% for review in product.reviewrating_set.all %}
+    
+        <div class="comment-list">
+           <div class="single-comment justify-content-between d-flex">
+              <div class="user justify-content-between d-flex">
+                 <div class="thumb">
+                    <img src="{% static 'mainshop/assets/img/profile.jpg' %}" alt="#" width="30px" style="border-radius: 50%;">
+                    <div class="d-flex align-items-center">
+                        <h5>
+                           <a href="#">{{ review.user.username }}</a>
+                        </h5>
+                        <p class="date">{{ review.created_at|date:"F j, Y, g:i a" }} </p>
+                     </div>
+                 </div>
+                
+                 <div class="desc">
+                    <p class="comment"> {{ review.review }}</p>
+                    <div class="d-flex justify-content-between">
+
+                      
+                       {% if review.user_image %}
+                       <div class="thumb">
+
+                        <img src="{{ review.user_image.url }}" alt="{{ review.user.username }}" width="50px">
+                        
+                    </div>
+                    {% endif %}
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+    
+       {% endfor %}
+    
+     </div> -->
+
+
+
             </div>
         </div>
     </div>

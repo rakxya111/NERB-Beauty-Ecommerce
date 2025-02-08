@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Avg
 from accounts.models import Account
 
 class TimeStampModel(models.Model):
@@ -40,6 +40,13 @@ class Product(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
     is_sale = models.BooleanField(default=False) 
     discount = models.DecimalField(max_digits=5,decimal_places=2,default=0)
+
+    def averageReview(self):
+        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(average=Avg('rating'))
+        avg = 0
+        if reviews['average'] is not None:
+            avg = float(reviews['average'])
+        return avg
     
 
     def sale_price(self):
@@ -86,3 +93,4 @@ class ReviewRating(models.Model):
 
     def __str__(self):
         return self.subject
+

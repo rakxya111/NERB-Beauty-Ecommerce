@@ -39,3 +39,26 @@ input:checked ~ label,label:hover ~ label{
 input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label, label:hover ~ input:checked ~ label{
     color: #cc9000;
 }
+
+.rating-star i 
+{
+    color: #cc9000 !important;
+
+}
+
+.rating-star11 {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Space between the rating and stars */
+}
+
+.rating-star11 h3 {
+    margin: 0; /* Remove default margin */
+}
+
+.rating-star11 i 
+{
+    color: #cc9000 !important;
+    font-size: 30px;
+
+}

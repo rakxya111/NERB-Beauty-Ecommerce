@@ -17,5 +17,4 @@ class Newsletterform(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = ReviewRating
-        fields = "__all__"
-        exclude = ['ip', 'status', 'created_at', 'updated_at']
+        fields = ['subject', 'rating', 'review', 'user_image']

@@ -1,15 +1,16 @@
 from django.shortcuts import render
 from django.urls import reverse
-from mainshop.models import Product , Category , Brand,Newsletter,Contact
+from mainshop.models import Product , Category , Brand,Newsletter,Contact, ReviewRating
 from django.views.generic import ListView,TemplateView,DetailView,View
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-from mainshop.forms import Newsletterform,ContactForm
+from mainshop.forms import Newsletterform,ContactForm, ReviewForm
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from cart.models import CartItem,Favourite
+from django.contrib.auth.decorators import login_required
 
 class HomeView(ListView):
     model = Product
@@ -177,6 +178,7 @@ class ProductDetailView(DetailView):
         product = self.get_object()
         related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
         context['related_products'] = related_products
+        review = ReviewRating.objects.filter(product_id=product.id, status=True)
 
         if self.request.user.is_authenticated:
             cart_items = CartItem.objects.filter(cart__user=self.request.user).values_list('product_id',flat=True)
@@ -307,3 +309,38 @@ class FlashSaleView(ListView):
 
 class AboutView(TemplateView):
     template_name = "mainshop/about.html"
+
+
+@login_required
+def submit_review(request, product_id):
+    url = request.META.get('HTTP_REFERER')  # Get previous page URL
+
+    if request.method == "POST":
+        try:
+            review = ReviewRating.objects.get(user_id=request.user.id, product_id=product_id)
+            form = ReviewForm(request.POST, request.FILES, instance=review)
+
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Thank you! Your review has been updated.')
+
+            return redirect(f"{url}#tabs-3") if url else redirect(f"/product_detail/{product_id}#tabs-3")
+
+        except ReviewRating.DoesNotExist:
+            form = ReviewForm(request.POST, request.FILES)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.product_id = product_id
+                review.user_id = request.user.id
+                review.ip = request.META.get("REMOTE_ADDR")
+
+                if 'user_image' in request.FILES:
+                    review.user_image = request.FILES['user_image']
+
+                review.save()
+                messages.success(request, "Thank you! Your review has been submitted.")
+
+            return redirect(f"{url}#tabs-3") if url else redirect(f"/product_detail/{product_id}#tabs-3")
+
+
+
