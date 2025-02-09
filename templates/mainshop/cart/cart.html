@@ -6,9 +6,12 @@
 
 {% if not cart_items %}
 
-<section class="shoping-cart spad" style="background-image: url('{% static "mainshop/assets/img/emptycart.png" %}');  background-size: cover;">
+<section class="shoping-cart spad" style="background-image: url('{% static "mainshop/assets/img/emptycart.png" %}');  background-size: cover; height:800px">
+   
+
 <a href="{% url 'product-list' %}" class=" primary-btn cart-btn cart-btn-right " style = "background-color: green; color: white; margin-top: -40px; margin-right:50px;"> <span class="icon_loading"></span>
         CONTINUE SHOPPING</a>
+
 
 </section>
 
@@ -95,6 +98,7 @@
                 <li>Shipping Fee <span>Rs {{ shipping }}</span></li>
                 <li>
                     <div class="shoping__discount">
+                        <div id="discount_alert"></div>
                         <h5>Discount Codes</h5>
                         <form method="post">
                             {% csrf_token %}

@@ -97,8 +97,8 @@
     </div>
     
         <!-- Cart Total Section -->
-         <div id="payment_message"></div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 paymentForm">
+            <div id="payment_message"></div>
             <div class="shoping__checkout">
                 <h5>Cart Total</h5>
                 <ul>
@@ -108,7 +108,12 @@
                     <li>Discount Amount <span>Rs {{ discount_amount }}</span></li>
                     <li>Grand Total <span>Rs {{ grand_total }}</span></li>
                 </ul>
-                <a href="#" class="primary-btn">MAKE PAYMENT</a>
+                <form method="POST" action="{% url 'payments' order_number=order.order_number %}">
+                    {% csrf_token %}
+                    <button type="submit" class="primary-btn">Make Payment</button>
+            </form>
+
+
     
             </div>
         </div>

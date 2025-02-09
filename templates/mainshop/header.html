@@ -34,7 +34,7 @@
                         <div class="header__top__right__auth" style=" margin-left: 400px; display: flex; align-items: right; gap: 10px;">
                             
                             <!-- Dashboard Link -->
-                            <a href="{% url 'dashboard' %}" style="text-decoration: none;">Dashboard |</a>
+                            <a href="{% url 'dashboard' %}" style="text-decoration: none; visibility: hidden;">Dashboard |</a>
                         
                             <!-- Logout Form -->
                             <form action="{% url 'logout' %}" method="post" style="margin: 0; display: flex; align-items: center;">

@@ -1,0 +1,44 @@
+{% extends "mainshop/base.html" %}
+
+{% block content %}
+<div class="container" style="height: 500px; margin-top: 70px;">
+    <div class="card">
+        <h2 class="card-header">Payment Confirmation</h2>
+        <div class="card-body">
+          
+          <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+         <p><strong>Total Amount:</strong> Rs. {{ order.order_total }}</p>
+         <h2 class="card-header">Items Purchased</h2>
+         <ul style="list-style:inside;">
+             {% for item in ordered_products %}
+                 <li>{{ item.product.product_name }} - Rs. {{ item.product.price }} (Qty: {{ item.quantity }})</li>
+             {% endfor %}
+         </ul>
+         <a href="/" class="primary-btn cart-btn cart-btn-right" style="background-color: green; color: white;">
+            GO TO HOME
+        </a>
+        </div>
+      </div>
+    
+    <!-- <h2>Payment Confirmation</h2>
+    
+    <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+    <p><strong>Total Amount:</strong> Rs. {{ order.order_total }}</p>
+    
+    <h3>Items Purchased:</h3>
+    <ul>
+        {% for item in ordered_products %}
+            <li>{{ item.product.product_name }} - Rs. {{ item.product.price }} (Qty: {{ item.quantity }})</li>
+        {% endfor %}
+    </ul>
+    
+    <div class="shoping__cart__btns" style="width:280px; height: 52px; margin-top: 10px; margin-left:-20px;">
+        <a href="/" class="primary-btn cart-btn cart-btn-right" style="background-color: green; color: white;">
+            GO TO HOME
+        </a>
+    </div>
+    </div> -->
+
+</div>
+{% endblock %}
+
