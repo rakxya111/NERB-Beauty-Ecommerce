@@ -39,20 +39,22 @@ Payment integration
 3. Install Dependencies
    pip install -r requirements.txt  
 
-4. Apply Migrations
--> Run makemigrations separately for cart and accounts apps:
+4. Apply Migrations -> Run makemigrations separately for cart and accounts apps:
+   
 python manage.py makemigrations cart
 python manage.py makemigrations accounts
 python manage.py migrate
 
-5.Create Superuser
--> Do this to login as admin in dashboard and add the products, brand and categories images from the zip media folder provided below.
+5.Create Superuser -> Do this to login as admin in dashboard and add the products, brand and categories images from the zip media folder provided below.
+
 python manage.py createsuperuser
 
 6. Run the Development Server
+
    python manage.py runserver  
 
-7. Access the Application
+8. Access the Application
+
    Open your browser and go to: http://127.0.0.1:8000/
 
 ########## Setting Up Media Files ##################
