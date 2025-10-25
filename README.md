@@ -1,6 +1,6 @@
 # 🌸 NERB BEAUTY ECOMMERCE WEBSITE | "Timeless Beauty Inspired By Nature"
 
-![NERB Banner](https://github.com/user-attachments/assets/664129d3-8aa1-4814-bf42-9b5b89879999)
+![NERB Banner](https://github.com/user-attachments/assets/0b5fd09f-c1d9-4cc8-88b4-e711d720774a)
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python&logoColor=white) 
 ![Django](https://img.shields.io/badge/Django-5.1-success?logo=django&logoColor=white) 
